@@ -378,32 +378,32 @@
             
             // Dimensions
             const noteHeight = 12;
-            const noteSpacing = 14;
+            const noteSpacing = 6;
             const arrowWidth = 30;
             const padding = 10;
+            const rightAlignX = 60;
             
             // Calculate dimensions
             const totalNoteHeight = notes.length > 0 ? (notes.length * noteSpacing) : noteHeight;
             const hasArrows = arrows.length > 0;
             const contentWidth = 80;
             const width = hasArrows ? contentWidth + arrowWidth + padding : contentWidth + padding;
-            const height = totalNoteHeight + (hasVibrato ? 25 : 10) + padding * 2;
+            const height = totalNoteHeight + (hasVibrato ? 35 : 10) + padding * 2;
             
             let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: block;">`;
             
             // Background
             svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
             
-            const startY = hasVibrato ? 25 : 10;
-            const notesBaseX = 10;
+            const startY = hasVibrato ? 30 : 10;
             const arrowsBaseX = contentWidth + padding;
             
-            // Vibrato at top (always)
+            // Vibrato at top (always) - made larger
             if (hasVibrato) {
-                svg += `<text x="${width/2}" y="18" font-size="20" fill="#7c3aed" font-weight="bold" text-anchor="middle">~</text>`;
+                svg += `<text x="${width/2}" y="24" font-size="28" fill="#7c3aed" font-weight="bold" text-anchor="middle">~</text>`;
             }
             
-            // Notes stacked vertically
+            // Notes stacked vertically - all ending at same right point
             notes.forEach((note, index) => {
                 const y = startY + (index * noteSpacing) + noteHeight / 2;
                 let dashLength = 0;
@@ -416,8 +416,8 @@
                     dashLength = 40;
                 }
                 
-                const x1 = notesBaseX;
-                const x2 = notesBaseX + dashLength;
+                const x1 = rightAlignX - dashLength;
+                const x2 = rightAlignX;
                 svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#000" stroke-width="3" stroke-linecap="round"/>`;
             });
             
