@@ -1366,6 +1366,12 @@
                 if (wrappers[2]) wrappers[2].classList.add('fade-out-right');
             }
             
+            // After animation completes, ensure center wrapper always shows current state
+            setTimeout(() => {
+                wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
+                if (wrappers[1]) wrappers[1].classList.add('to-current');
+            }, 500);
+            
             // Display bottom section with Hazzat symbols
             const hazzatSection = document.getElementById('hazzatDisplaySection');
             hazzatSection.style.display = 'block';
@@ -1433,6 +1439,13 @@
                             Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
                         </div>
                     `;
+                    
+                    // After animation completes, ensure center wrapper always shows current state
+                    setTimeout(() => {
+                        const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
+                        hazzatWrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
+                        if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
+                    }, 500);
                 } else {
                     // Fallback if symbol data not found
                     hazzatSection.innerHTML = `
