@@ -290,7 +290,6 @@
             <button class="symbol-btn btn-long" onclick="addElement('longNote')">📍 Long Note</button>
             <button class="symbol-btn btn-up" onclick="addElement('upArrow')">⬆️ Up Arrow</button>
             <button class="symbol-btn btn-down" onclick="addElement('downArrow')">⬇️ Down Arrow</button>
-            <button class="symbol-btn btn-vibrato" onclick="addElement('vibrato')">〰️ Vibrato</button>
         </div>
 
         <div class="current-preview" id="currentPreview">
@@ -374,7 +373,6 @@
         function renderHazzatSymbol(elements) {
             const notes = elements.filter(e => ['shortNote', 'normalNote', 'longNote'].includes(e));
             const arrows = elements.filter(e => ['upArrow', 'downArrow'].includes(e));
-            const hasVibrato = elements.includes('vibrato');
             
             // Dimensions
             const noteHeight = 12;
@@ -388,29 +386,15 @@
             const hasArrows = arrows.length > 0;
             const contentWidth = 80;
             const width = hasArrows ? contentWidth + arrowWidth : contentWidth + padding;
-            const height = totalNoteHeight + (hasVibrato ? 35 : 10) + padding * 2;
+            const height = totalNoteHeight + 10 + padding * 2;
             
             let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: block;">`;
             
             // Background
             svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
             
-            const startY = hasVibrato ? 30 : 10;
-            const arrowsBaseX = rightAlignX + 3;
-            
-            // Vibrato at top (always) - extreme wavy tilde
-            if (hasVibrato) {
-                const vibratoY = 16;
-                const amplitude = 6;
-                const wavelength = 4;
-                let vibPath = `M 20 ${vibratoY}`;
-                for (let i = 0; i <= 20; i++) {
-                    const x = 20 + (i * 2);
-                    const y = vibratoY + (Math.sin(i * Math.PI / wavelength) * amplitude);
-                    vibPath += ` L ${x} ${y}`;
-                }
-                svg += `<path d="${vibPath}" stroke="#7c3aed" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-            }
+            const startY = 10;
+            const arrowsBaseX = rightAlignX + 8;
             
             // Notes stacked vertically from bottom to top
             notes.forEach((note, index) => {
