@@ -1,18 +1,8 @@
 {
   "buildCommand": "echo 'Building...' && exit 0",
   "outputDirectory": ".",
-  "publicPath": "/",
   "trailingSlash": false,
   "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
     {
       "source": "/fonts/(.*).ttf",
       "headers": [
@@ -23,6 +13,15 @@
         {
           "key": "Content-Type",
           "value": "font/ttf"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }
