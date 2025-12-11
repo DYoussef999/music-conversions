@@ -576,10 +576,6 @@
 
         <!-- Coptic Font Visualizer Tab -->
         <div id="hazzat-tab" class="tab-content active">
-            <div class="instructions" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <button id="infoBtn" style="width: 32px; height: 32px; border-radius: 50%; background: #666; color: white; border: none; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="toggleInfoModal()">i</button>
-            </div>
-
             <div id="infoModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
                 <div style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -619,14 +615,11 @@
                 </div>
             </div>
 
-            <div class="font-select-section">
-                <label for="fontSelect">Coptic Font:</label>
-                <select id="fontSelect" onchange="changeCopticFont()">
-                    <!-- Dynamically populated by JavaScript -->
-                </select>
+            <!-- Textbox Section -->
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                <label for="hazzatInput" style="margin: 0;">Coptic Text:</label>
+                <button id="textboxInfoBtn" style="width: 16px; height: 16px; border-radius: 50%; background: #999; color: white; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;" onclick="toggleInfoModal()" title="Hazzat Symbol Maker info">i</button>
             </div>
-
-            <label for="hazzatInput">Coptic Text:</label>
             <textarea 
                 id="hazzatInput" 
                 placeholder="Click keyboard buttons below or type to enter text..."
@@ -634,9 +627,9 @@
 
             <!-- Hazzat Symbol Maker Section -->
             <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
                     <label style="font-weight: 600; color: #333; margin: 0;">Hazzat Symbol Maker:</label>
-                    <button id="hazzatInfoBtn" style="width: 24px; height: 24px; border-radius: 50%; background: #666; color: white; border: none; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;" onclick="toggleHazzatInfoModal()">i</button>
+                    <button id="hazzatInfoBtn" style="width: 16px; height: 16px; border-radius: 50%; background: #999; color: white; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;" onclick="toggleHazzatInfoModal()" title="Hazzat Symbol Maker info">i</button>
                 </div>
                 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
@@ -658,8 +651,23 @@
                 </div>
             </div>
 
+            <!-- Font Selection Section -->
+            <div class="font-select-section" style="margin-top: 30px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <label for="fontSelect" style="margin: 0;">Coptic Font:</label>
+                    <button id="fontInfoBtn" style="width: 16px; height: 16px; border-radius: 50%; background: #999; color: white; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;" onclick="toggleInfoModal()" title="Font & Keyboard info">i</button>
+                </div>
+                <select id="fontSelect" onchange="changeCopticFont()">
+                    <!-- Dynamically populated by JavaScript -->
+                </select>
+            </div>
+
+            <!-- Keyboard Section -->
             <div class="keyboard-section">
-                <label>Coptic Character Keyboard:</label>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                    <label style="margin: 0;">Coptic Character Keyboard:</label>
+                    <button id="keyboardInfoBtn" style="width: 16px; height: 16px; border-radius: 50%; background: #999; color: white; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0;" onclick="toggleInfoModal()" title="Font & Keyboard info">i</button>
+                </div>
                 <div class="keyboard-grid" id="keyboardGrid"></div>
                 <button onclick="removeLastCharacter()" style="width: 100%; margin-top: 10px; padding: 10px; background: #888; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">⌫ Backspace</button>
             </div>
