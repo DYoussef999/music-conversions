@@ -519,7 +519,36 @@
             return chars;
         }
         
-        const copticCharacters = getAllAvailableCharacters();
+        // Store all available characters
+        const allCopticCharacters = getAllAvailableCharacters();
+        
+        // Filter function to get visible characters for a specific font
+        function getVisibleCharactersForFont(font) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const fontSize = '20px';
+            ctx.font = `${fontSize} '${font}', serif`;
+            
+            const visibleChars = [];
+            const spaceWidth = ctx.measureText('\u00A0').width;
+            
+            allCopticCharacters.forEach(char => {
+                // Skip pure whitespace and control characters
+                if (/^[\s\u200B\u200C\u200D\u2060\u3164\uFEFF]$/.test(char)) {
+                    return;
+                }
+                
+                const width = ctx.measureText(char).width;
+                // Character is visible if it renders with width > 0
+                if (width > 0) {
+                    visibleChars.push(char);
+                }
+            });
+            
+            return visibleChars;
+        }
+        
+        let copticCharacters = getVisibleCharactersForFont('Hazzat');
 
         let currentText = '';
         let currentCharIndex = 0;
@@ -539,6 +568,10 @@
 
         function changeCopticFont() {
             currentFont = document.getElementById('fontSelect').value;
+            
+            // Get visible characters for this font
+            copticCharacters = getVisibleCharactersForFont(currentFont);
+            
             updateFontVariable();
             buildKeyboard();
             
