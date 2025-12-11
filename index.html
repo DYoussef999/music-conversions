@@ -1349,21 +1349,20 @@
                 nextCharDisplay.textContent = '';
             }
             
+            // Always apply initial layout classes (even if not animating)
+            wrappers.forEach(wrapper => {
+                wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+            });
+            if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+            if (wrappers[1]) wrappers[1].classList.add('to-current');
+            if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
+            
             // Only animate if index actually changed
             if (currentCopticIndex !== previousCopticIndex) {
-                // Helper to clear all animation classes
-                const clearClasses = (wrapper) => {
-                    wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
-                };
-                
-                // Step 1: Set initial state with transitions disabled, so it's instant
+                // Disable transitions for instant initial state setup
                 wrappers.forEach(wrapper => {
                     wrapper.style.transition = 'none';
-                    clearClasses(wrapper);
                 });
-                if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
-                if (wrappers[1]) wrappers[1].classList.add('to-current');
-                if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
                 
                 // Force reflow to apply initial state
                 void wrappers[0].offsetHeight;
@@ -1446,92 +1445,75 @@
                         }
                     }
                     
+                    // Render with initial layout classes
+                    hazzatSection.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
+                            <div class="hazzat-wrapper to-left-adj">
+                                ${prevHazzatSvg}
+                            </div>
+                            <div class="hazzat-wrapper to-current">
+                                ${svg}
+                            </div>
+                            <div class="hazzat-wrapper to-right-adj">
+                                ${nextHazzatSvg}
+                            </div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px; color: #666;">
+                            Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
+                        </div>
+                    `;
+                    
                     // Check if we need to animate
                     if (currentHazzatIndex !== previousHazzatIndex) {
-                        // Helper to clear all animation classes
-                        const clearHazzatClasses = (wrapper) => {
-                            wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
-                        };
+                        const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
                         
-                        // Step 1: Set initial state with transitions disabled, so it's instant
-                        // Render with initial classes
-                        hazzatSection.innerHTML = `
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                                <div class="hazzat-wrapper to-left-adj" style="transition: none;">
-                                    ${prevHazzatSvg}
-                                </div>
-                                <div class="hazzat-wrapper to-current" style="transition: none;">
-                                    ${svg}
-                                </div>
-                                <div class="hazzat-wrapper to-right-adj" style="transition: none;">
-                                    ${nextHazzatSvg}
-                                </div>
-                            </div>
-                            <div style="text-align: center; font-size: 14px; color: #666;">
-                                Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
-                            </div>
-                        `;
+                        // Disable transitions for instant initial state setup
+                        hazzatWrappers.forEach(wrapper => {
+                            wrapper.style.transition = 'none';
+                        });
                         
                         // Force reflow
                         void hazzatSection.offsetHeight;
                         
                         // Step 2: Enable transitions and animate
                         requestAnimationFrame(() => {
-                            const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
-                            hazzatWrappers.forEach(wrapper => {
+                            const freshWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
+                            freshWrappers.forEach(wrapper => {
                                 wrapper.style.transition = '';  // Re-enable transitions
                             });
                             
                             if (lastNavigationDirection === 'next') {
                                 // Moving forward: things cycle left
-                                if (hazzatWrappers[0]) {
-                                    hazzatWrappers[0].classList.remove('to-left-adj');
-                                    hazzatWrappers[0].classList.add('fade-out-left');
+                                if (freshWrappers[0]) {
+                                    freshWrappers[0].classList.remove('to-left-adj');
+                                    freshWrappers[0].classList.add('fade-out-left');
                                 }
-                                if (hazzatWrappers[1]) {
-                                    hazzatWrappers[1].classList.remove('to-current');
-                                    hazzatWrappers[1].classList.add('to-left-adj');
+                                if (freshWrappers[1]) {
+                                    freshWrappers[1].classList.remove('to-current');
+                                    freshWrappers[1].classList.add('to-left-adj');
                                 }
-                                if (hazzatWrappers[2]) {
-                                    hazzatWrappers[2].classList.remove('to-right-adj');
-                                    hazzatWrappers[2].classList.add('to-current');
+                                if (freshWrappers[2]) {
+                                    freshWrappers[2].classList.remove('to-right-adj');
+                                    freshWrappers[2].classList.add('to-current');
                                 }
                             } else {
                                 // Moving backward: things cycle right
-                                if (hazzatWrappers[0]) {
-                                    hazzatWrappers[0].classList.remove('to-left-adj');
-                                    hazzatWrappers[0].classList.add('to-current');
+                                if (freshWrappers[0]) {
+                                    freshWrappers[0].classList.remove('to-left-adj');
+                                    freshWrappers[0].classList.add('to-current');
                                 }
-                                if (hazzatWrappers[1]) {
-                                    hazzatWrappers[1].classList.remove('to-current');
-                                    hazzatWrappers[1].classList.add('to-right-adj');
+                                if (freshWrappers[1]) {
+                                    freshWrappers[1].classList.remove('to-current');
+                                    freshWrappers[1].classList.add('to-right-adj');
                                 }
-                                if (hazzatWrappers[2]) {
-                                    hazzatWrappers[2].classList.remove('to-right-adj');
-                                    hazzatWrappers[2].classList.add('fade-out-right');
+                                if (freshWrappers[2]) {
+                                    freshWrappers[2].classList.remove('to-right-adj');
+                                    freshWrappers[2].classList.add('fade-out-right');
                                 }
                             }
                         });
                         
                         previousHazzatIndex = currentHazzatIndex;
-                    } else {
-                        // No animation, just render with initial layout
-                        hazzatSection.innerHTML = `
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                                <div class="hazzat-wrapper to-left-adj">
-                                    ${prevHazzatSvg}
-                                </div>
-                                <div class="hazzat-wrapper to-current">
-                                    ${svg}
-                                </div>
-                                <div class="hazzat-wrapper to-right-adj">
-                                    ${nextHazzatSvg}
-                                </div>
-                            </div>
-                            <div style="text-align: center; font-size: 14px; color: #666;">
-                                Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
-                            </div>
-                        `;
                     }
                 } else {
                     // Fallback if symbol data not found
