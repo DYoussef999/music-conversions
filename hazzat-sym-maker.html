@@ -379,7 +379,7 @@
             // Dimensions
             const noteHeight = 12;
             const noteSpacing = 6;
-            const arrowWidth = 20;
+            const arrowWidth = 15;
             const padding = 10;
             const rightAlignX = 60;
             
@@ -387,7 +387,7 @@
             const totalNoteHeight = notes.length > 0 ? (notes.length * noteSpacing) : noteHeight;
             const hasArrows = arrows.length > 0;
             const contentWidth = 80;
-            const width = hasArrows ? contentWidth + arrowWidth + padding : contentWidth + padding;
+            const width = hasArrows ? contentWidth + arrowWidth : contentWidth + padding;
             const height = totalNoteHeight + (hasVibrato ? 35 : 10) + padding * 2;
             
             let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: block;">`;
@@ -396,19 +396,20 @@
             svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
             
             const startY = hasVibrato ? 30 : 10;
-            const arrowsBaseX = contentWidth + padding - 5;
+            const arrowsBaseX = rightAlignX + 3;
             
-            // Vibrato at top (always) - wavy sine wave
+            // Vibrato at top (always) - extreme wavy tilde
             if (hasVibrato) {
-                const vibratoStartX = width / 2 - 20;
-                const vibratoY = 15;
-                let vibPath = `M ${vibratoStartX} ${vibratoY}`;
-                for (let i = 0; i <= 4; i++) {
-                    const x = vibratoStartX + (i * 10);
-                    const y = vibratoY + (Math.sin(i * Math.PI / 2) * 4);
-                    vibPath += ` Q ${x + 5} ${y + 4}, ${x + 10} ${y}`;
+                const vibratoY = 16;
+                const amplitude = 6;
+                const wavelength = 4;
+                let vibPath = `M 20 ${vibratoY}`;
+                for (let i = 0; i <= 20; i++) {
+                    const x = 20 + (i * 2);
+                    const y = vibratoY + (Math.sin(i * Math.PI / wavelength) * amplitude);
+                    vibPath += ` L ${x} ${y}`;
                 }
-                svg += `<path d="${vibPath}" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+                svg += `<path d="${vibPath}" stroke="#7c3aed" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
             }
             
             // Notes stacked vertically from bottom to top
@@ -439,7 +440,7 @@
                 const arrowheadSize = 6;
                 
                 arrows.forEach((arrow, idx) => {
-                    const xOffset = idx * 10;
+                    const xOffset = idx * 8;
                     
                     if (arrow === 'upArrow') {
                         // Arrow pointing up
