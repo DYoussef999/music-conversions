@@ -1345,6 +1345,9 @@
                 if (wrappers[1]) wrappers[1].classList.add('to-current');
                 if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
                 
+                // Force a reflow to apply initial state
+                void wrappers[0].offsetHeight;
+                
                 // In next frame, trigger animation to new positions
                 requestAnimationFrame(() => {
                     wrappers.forEach(wrapper => wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right'));
@@ -1440,6 +1443,9 @@
                     
                     // Animate if index changed
                     if (currentHazzatIndex !== previousHazzatIndex) {
+                        // Force a reflow to apply initial state
+                        void hazzatSection.offsetHeight;
+                        
                         requestAnimationFrame(() => {
                             const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
                             
