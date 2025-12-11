@@ -1127,24 +1127,37 @@
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
                 if (char === '◆') {
-                    // This is a Hazzat placeholder
+                    // This is a Hazzat placeholder - add to current group
                     if (currentGroup) {
                         currentGroup.hazzatSymbols.push('◆');
+                    } else {
+                        // If no current group, create one for this orphaned Hazzat
+                        currentGroup = {
+                            copticChar: '',
+                            hazzatSymbols: ['◆']
+                        };
                     }
-                } else {
+                } else if (char.trim()) {
                     // This is a regular character
-                    if (currentGroup) {
+                    if (currentGroup && currentGroup.copticChar) {
+                        // Save previous group and start new one
                         groups.push(currentGroup);
+                        currentGroup = {
+                            copticChar: char,
+                            hazzatSymbols: []
+                        };
+                    } else {
+                        // Start or continue current group
+                        currentGroup = {
+                            copticChar: char,
+                            hazzatSymbols: currentGroup ? currentGroup.hazzatSymbols : []
+                        };
                     }
-                    currentGroup = {
-                        copticChar: char,
-                        hazzatSymbols: []
-                    };
                 }
             }
             
             // Don't forget the last group
-            if (currentGroup) {
+            if (currentGroup && currentGroup.copticChar) {
                 groups.push(currentGroup);
             }
             
@@ -1185,22 +1198,38 @@
                 }
             }
             
-            // Display Hazzat symbol below
-            const hazzatDisplay = document.getElementById('nextCharacterDisplay').parentElement.parentElement;
-            const hazzatSection = hazzatDisplay.querySelector('.hazzat-display-section');
+            document.getElementById('characterCode').textContent = 
+                `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
             
-            if (hazzatSection) {
-                if (currentGroup.hazzatSymbols.length > 0) {
-                    hazzatSection.style.display = 'block';
-                    hazzatSection.innerHTML = `<div style="text-align: center; padding: 20px; background: #f0f0f0; border-radius: 8px; margin-top: 20px;">
-                        <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Hazzat Symbol ${currentHazzatIndex + 1} of ${currentGroup.hazzatSymbols.length}</div>
-                        <div style="display: flex; justify-content: center;">
-                            ${currentGroup.hazzatSymbols[currentHazzatIndex] === '◆' ? '<svg width="120" height="80" viewBox="0 0 120 80"><rect width="120" height="80" fill="white" stroke="#ddd" stroke-width="1"/><text x="60" y="50" text-anchor="middle" font-size="14" fill="#999">Hazzat Symbol</text></svg>' : ''}
-                        </div>
-                    </div>`;
-                } else {
-                    hazzatSection.style.display = 'none';
-                }
+            // Display Hazzat symbol below in a separate section
+            let hazzatSection = document.getElementById('hazzatDisplaySection');
+            if (!hazzatSection) {
+                // Create the Hazzat display section if it doesn't exist
+                const controlsDiv = document.querySelector('.controls');
+                hazzatSection = document.createElement('div');
+                hazzatSection.id = 'hazzatDisplaySection';
+                hazzatSection.style.cssText = 'margin-top: 40px; padding: 20px; background: #f9f9f9; border: 2px solid #ddd; border-radius: 8px; text-align: center;';
+                controlsDiv.parentNode.insertBefore(hazzatSection, controlsDiv);
+            }
+            
+            if (currentGroup.hazzatSymbols.length > 0) {
+                hazzatSection.style.display = 'block';
+                hazzatSection.innerHTML = `
+                    <div style="font-size: 12px; color: #666; margin-bottom: 15px;">
+                        Hazzat Symbol ${currentHazzatIndex + 1} of ${currentGroup.hazzatSymbols.length}
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; min-height: 100px;">
+                        <svg width="140" height="100" viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg" style="border: 1px solid #ddd; border-radius: 4px; background: white;">
+                            <rect width="140" height="100" fill="white" stroke="none"/>
+                            <g>
+                                <line x1="30" y1="50" x2="110" y2="50" stroke="#999" stroke-width="1" stroke-dasharray="2,2"/>
+                                <text x="70" y="60" text-anchor="middle" font-size="12" fill="#999">Hazzat ${currentHazzatIndex + 1}</text>
+                            </g>
+                        </svg>
+                    </div>
+                `;
+            } else {
+                hazzatSection.style.display = 'none';
             }
             
             const totalSteps = visualizationData.reduce((sum, group) => sum + Math.max(1, group.hazzatSymbols.length), 0);
@@ -1208,8 +1237,6 @@
             
             document.getElementById('currentIndex').textContent = currentStep;
             document.getElementById('totalChars').textContent = totalSteps;
-            document.getElementById('characterCode').textContent = 
-                `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
         }
 
         function nextCharacter() {
