@@ -524,14 +524,14 @@
         function buildKeyboard() {
             const grid = document.getElementById('keyboardGrid');
             grid.innerHTML = '';
-            grid.style.fontFamily = `"${currentFont}", serif`;
+            grid.style.fontFamily = `'${currentFont}', serif`;
             
             copticCharacters.forEach(char => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'key-btn';
                 btn.textContent = char;
-                btn.style.fontFamily = `"${currentFont}", serif`;
+                btn.style.fontFamily = `'${currentFont}', serif`;
                 btn.title = `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
                 
                 btn.addEventListener('click', (e) => {
