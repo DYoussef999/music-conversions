@@ -425,9 +425,9 @@
             
             // Arrows on the right at 30-degree angle (parallel to skew, positive slope)
             if (hasArrows && notes.length > 0) {
-                const arrowTopY = startY;
-                const arrowBottomY = startY + (notes.length - 1) * noteSpacing;
-                const arrowBottomX = baseRightX + ((notes.length - 1) * noteSpacing * skewTan) + 8;
+                const arrowTopY = startY - 3;
+                const arrowBottomY = startY + (notes.length - 1) * noteSpacing + 3;
+                const arrowBottomX = baseRightX + ((notes.length - 1) * noteSpacing * skewTan) + 15;
                 const arrowTopX = arrowBottomX - (arrowBottomY - arrowTopY) * skewTan;
                 
                 arrows.forEach((arrow, idx) => {
