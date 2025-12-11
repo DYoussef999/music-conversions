@@ -379,13 +379,13 @@
             const noteSpacing = 6;
             const arrowWidth = 15;
             const padding = 10;
-            const skewAngle = 30 * Math.PI / 180; // 30 degrees in radians
-            const skewTan = Math.tan(skewAngle); // ~0.577 for 30 degrees
+            const skewAngle = -30 * Math.PI / 180; // -30 degrees (counterclockwise) for positive slope
+            const skewTan = Math.tan(skewAngle); // negative value for positive slope
             
             // Calculate dimensions
             const totalNoteHeight = notes.length > 0 ? (notes.length * noteSpacing) : noteHeight;
             const hasArrows = arrows.length > 0;
-            const skewOffset = totalNoteHeight * skewTan; // How much the skew shifts
+            const skewOffset = Math.abs(totalNoteHeight * skewTan); // How much the skew shifts
             const contentWidth = 80 + skewOffset;
             const width = hasArrows ? contentWidth + arrowWidth + 5 : contentWidth + padding;
             const height = totalNoteHeight + 10 + padding * 2;
@@ -404,8 +404,8 @@
                 const noteIndex = notes.length - 1 - index;
                 const y = startY + (noteIndex * noteSpacing) + noteHeight / 2;
                 
-                // Calculate x position for right edge based on skew
-                // As we go up (decreasing noteIndex), we move left (decreasing x)
+                // Calculate x position for right edge based on skew (positive slope)
+                // As we go up (decreasing noteIndex), we move right (increasing x)
                 const skewedRightX = baseRightX + (noteIndex * noteSpacing * skewTan);
                 
                 let dashLength = 0;
@@ -423,7 +423,7 @@
                 svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#000" stroke-width="3" stroke-linecap="round"/>`;
             });
             
-            // Arrows on the right at 30-degree angle (parallel to skew)
+            // Arrows on the right at 30-degree angle (parallel to skew, positive slope)
             if (hasArrows && notes.length > 0) {
                 const arrowStartY = startY;
                 const arrowEndY = startY + (notes.length - 1) * noteSpacing;
@@ -435,21 +435,21 @@
                     const arrowheadSize = 6;
                     
                     if (arrow === 'upArrow') {
-                        // Arrow pointing up and to the left (parallel to skew, but upward)
+                        // Arrow pointing up and to the right (parallel to positive slope)
                         svg += `<line x1="${arrowStartX + xOffset}" y1="${arrowEndY}" x2="${arrowEndX + xOffset}" y2="${arrowStartY}" stroke="#2563eb" stroke-width="2"/>`;
                         // Arrowhead at top
                         const tipX = arrowEndX + xOffset;
                         const tipY = arrowStartY;
-                        const angle = -skewAngle - Math.PI / 2; // pointing upward and left
+                        const angle = -skewAngle - Math.PI / 2; // pointing upward and right
                         const arrowSize = arrowheadSize;
                         svg += `<polygon points="${tipX},${tipY} ${tipX + arrowSize * Math.cos(angle + Math.PI / 6)},${tipY + arrowSize * Math.sin(angle + Math.PI / 6)} ${tipX + arrowSize * Math.cos(angle - Math.PI / 6)},${tipY + arrowSize * Math.sin(angle - Math.PI / 6)}" fill="#2563eb"/>`;
                     } else if (arrow === 'downArrow') {
-                        // Arrow pointing down and to the right (parallel to skew)
+                        // Arrow pointing down and to the left (parallel to positive slope)
                         svg += `<line x1="${arrowStartX + xOffset}" y1="${arrowStartY}" x2="${arrowEndX + xOffset}" y2="${arrowEndY}" stroke="#dc2626" stroke-width="2"/>`;
                         // Arrowhead at bottom
                         const tipX = arrowEndX + xOffset;
                         const tipY = arrowEndY;
-                        const angle = -skewAngle + Math.PI / 2; // pointing downward and right
+                        const angle = -skewAngle + Math.PI / 2; // pointing downward and left
                         const arrowSize = arrowheadSize;
                         svg += `<polygon points="${tipX},${tipY} ${tipX + arrowSize * Math.cos(angle + Math.PI / 6)},${tipY + arrowSize * Math.sin(angle + Math.PI / 6)} ${tipX + arrowSize * Math.cos(angle - Math.PI / 6)},${tipY + arrowSize * Math.sin(angle - Math.PI / 6)}" fill="#dc2626"/>`;
                     }
