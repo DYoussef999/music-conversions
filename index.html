@@ -262,6 +262,22 @@
 
         .character-wrapper {
             text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .character-wrapper.prev-char {
+            opacity: 0.4;
+            transform: translateX(-60px) scale(0.8);
+        }
+
+        .character-wrapper.current-char {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        .character-wrapper.next-char {
+            opacity: 0.4;
+            transform: translateX(60px) scale(0.8);
         }
 
         .character {
@@ -593,14 +609,14 @@
 
                 <div class="character-display" onclick="nextCharacter()">
                     <div class="character-container">
-                        <div class="character-wrapper">
+                        <div class="character-wrapper prev-char">
                             <div class="adjacent-character" id="prevCharacterDisplay"></div>
                         </div>
-                        <div class="character-wrapper">
+                        <div class="character-wrapper current-char">
                             <div class="character" id="characterDisplay">א</div>
                             <div class="character-code" id="characterCode"></div>
                         </div>
-                        <div class="character-wrapper">
+                        <div class="character-wrapper next-char">
                             <div class="adjacent-character" id="nextCharacterDisplay"></div>
                         </div>
                     </div>
@@ -1258,12 +1274,6 @@
             const charCode = document.getElementById('characterCode');
             const prevCharDisplay = document.getElementById('prevCharacterDisplay');
             const nextCharDisplay = document.getElementById('nextCharacterDisplay');
-            const characterContainer = document.querySelector('.character-container');
-            
-            // Trigger animation
-            characterContainer.classList.remove('animate-display');
-            void characterContainer.offsetWidth; // Force reflow to restart animation
-            characterContainer.classList.add('animate-display');
             
             // Show previous Coptic character
             if (currentCopticIndex > 0) {
