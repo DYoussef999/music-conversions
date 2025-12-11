@@ -262,28 +262,6 @@
 
         .character-wrapper {
             text-align: center;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .character-wrapper.prev-char {
-            opacity: 0.4;
-            transform: translateX(-60px) scale(0.8);
-        }
-
-        .character-wrapper.current-char {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-        }
-
-        .character-wrapper.next-char {
-            opacity: 0.4;
-            transform: translateX(60px) scale(0.8);
-        }
-
-        /* Directional animations */
-        .character-wrapper.fade-out-left {
-            opacity: 0;
-            transform: translateX(-80px) scale(0);
         }
 
         .character-wrapper.to-left-adj {
@@ -296,24 +274,14 @@
             transform: translateX(0) scale(1);
         }
 
-        .character-wrapper.fade-out-right {
-            opacity: 0;
-            transform: translateX(80px) scale(0);
-        }
-
         .character-wrapper.to-right-adj {
             opacity: 0.4;
             transform: translateX(60px) scale(0.8);
         }
 
-        /* Hazzat animation wrappers */
+        /* Hazzat wrappers */
         .hazzat-wrapper {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hazzat-wrapper.fade-out-left {
-            opacity: 0;
-            transform: translateX(-80px) scale(0);
+            text-align: center;
         }
 
         .hazzat-wrapper.to-left-adj {
@@ -324,11 +292,6 @@
         .hazzat-wrapper.to-current {
             opacity: 1;
             transform: translateX(0) scale(1);
-        }
-
-        .hazzat-wrapper.fade-out-right {
-            opacity: 0;
-            transform: translateX(80px) scale(0);
         }
 
         .hazzat-wrapper.to-right-adj {
@@ -1349,9 +1312,9 @@
                 nextCharDisplay.textContent = '';
             }
             
-            // Apply layout classes
+            // Apply layout classes - prev on left, current centered, next on right
             wrappers.forEach(wrapper => {
-                wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj');
             });
             if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
             if (wrappers[1]) wrappers[1].classList.add('to-current');
@@ -1396,7 +1359,7 @@
                         }
                     }
                     
-                    // Render with layout classes
+                    // Render with layout classes - prev on left, current centered, next on right
                     hazzatSection.innerHTML = `
                         <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
                             <div class="hazzat-wrapper to-left-adj">
