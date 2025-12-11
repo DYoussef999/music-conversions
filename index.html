@@ -538,6 +538,28 @@
                 placeholder="Click keyboard buttons below or type to enter text..."
             ></textarea>
 
+            <!-- Hazzat Symbol Maker Section -->
+            <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+                <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #333;">Hazzat Symbol Maker:</label>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+                    <button class="key-btn" onclick="addHazzatElement('shortNote')" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white;">Short Note</button>
+                    <button class="key-btn" onclick="addHazzatElement('normalNote')" style="background: linear-gradient(135deg, #4a5568 0%, #1a202c 100%); color: white;">Normal Note</button>
+                    <button class="key-btn" onclick="addHazzatElement('longNote')" style="background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%); color: white;">Long Note</button>
+                    <button class="key-btn" onclick="addHazzatElement('upArrow')" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white;">⬆️ Up Arrow</button>
+                    <button class="key-btn" onclick="addHazzatElement('downArrow')" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;">⬇️ Down Arrow</button>
+                </div>
+
+                <div id="hazzatPreview" style="background: white; border: 2px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; min-height: 60px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px;">
+                    Symbol preview will appear here
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="completeHazzatSymbol()" id="completeHazzatBtn" style="flex: 1; padding: 10px; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; opacity: 0.5; cursor: not-allowed;" disabled>Add to Text</button>
+                    <button onclick="clearCurrentHazzat()" style="flex: 0 1 auto; padding: 10px 15px; background: #e5e7eb; color: #374151; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Clear</button>
+                </div>
+            </div>
+
             <div class="keyboard-section">
                 <label>Coptic Character Keyboard:</label>
                 <div class="keyboard-grid" id="keyboardGrid"></div>
@@ -887,6 +909,185 @@
             console.log(`Built keyboard with ${characters.length} characters for font ${currentFont}`);
         }
 
+        // Hazzat Symbol Maker Functions
+        let currentHazzatSymbol = [];
+
+        function addHazzatElement(element) {
+            currentHazzatSymbol.push(element);
+            updateHazzatPreview();
+            updateCompleteHazzatButton();
+        }
+
+        function clearCurrentHazzat() {
+            currentHazzatSymbol = [];
+            updateHazzatPreview();
+            updateCompleteHazzatButton();
+        }
+
+        function updateCompleteHazzatButton() {
+            const btn = document.getElementById('completeHazzatBtn');
+            btn.disabled = currentHazzatSymbol.length === 0;
+            btn.style.opacity = currentHazzatSymbol.length === 0 ? '0.5' : '1';
+            btn.style.cursor = currentHazzatSymbol.length === 0 ? 'not-allowed' : 'pointer';
+        }
+
+        function updateHazzatPreview() {
+            const preview = document.getElementById('hazzatPreview');
+            if (currentHazzatSymbol.length === 0) {
+                preview.innerHTML = '<div style="color: #999; font-size: 14px;">Symbol preview will appear here</div>';
+                return;
+            }
+            preview.innerHTML = renderHazzatSymbol(currentHazzatSymbol);
+        }
+
+        function renderHazzatSymbol(elements) {
+            const notes = elements.filter(e => ['shortNote', 'normalNote', 'longNote'].includes(e));
+            const arrows = elements.filter(e => ['upArrow', 'downArrow'].includes(e));
+            
+            // Dimensions
+            const noteHeight = 12;
+            const noteSpacing = 6;
+            const arrowWidth = 15;
+            const padding = 10;
+            const skewAngle = -30 * Math.PI / 180;
+            const skewTan = Math.tan(skewAngle);
+            
+            // Calculate dimensions
+            const totalNoteHeight = notes.length > 0 ? (notes.length * noteSpacing) : noteHeight;
+            const hasArrows = arrows.length > 0;
+            const skewOffset = Math.abs(totalNoteHeight * skewTan);
+            const contentWidth = 80 + skewOffset;
+            const width = hasArrows ? contentWidth + arrowWidth + 5 : contentWidth + padding;
+            const height = totalNoteHeight + 10 + padding * 2;
+            
+            let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; max-width: 150px; height: auto; margin: 0 5px;">`;
+            
+            svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
+            
+            const startY = 10;
+            const baseRightX = 60;
+            
+            // Notes stacked vertically from bottom to top with skew alignment
+            notes.forEach((note, index) => {
+                const noteIndex = notes.length - 1 - index;
+                const y = startY + (noteIndex * noteSpacing) + noteHeight / 2;
+                const skewedRightX = baseRightX + (noteIndex * noteSpacing * skewTan);
+                
+                let dashLength = 0;
+                if (note === 'shortNote') {
+                    dashLength = 15;
+                } else if (note === 'normalNote') {
+                    dashLength = 25;
+                } else if (note === 'longNote') {
+                    dashLength = 40;
+                }
+                
+                const x1 = skewedRightX - dashLength;
+                const x2 = skewedRightX;
+                svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#000" stroke-width="3" stroke-linecap="round"/>`;
+            });
+            
+            // Arrows
+            if (hasArrows && notes.length > 0) {
+                const arrowShift = 8;
+                const arrowTopY = startY + arrowShift;
+                const arrowBottomY = startY + (notes.length - 1) * noteSpacing + arrowShift;
+                const arrowBottomX = baseRightX + ((notes.length - 1) * noteSpacing * skewTan) + 15;
+                const arrowTopX = arrowBottomX - (arrowBottomY - arrowTopY) * skewTan;
+                
+                arrows.forEach((arrow, idx) => {
+                    const xOffset = idx * 8;
+                    const arrowheadSize = 7;
+                    
+                    if (arrow === 'upArrow') {
+                        const x1 = arrowBottomX + xOffset;
+                        const y1 = arrowBottomY;
+                        const x2 = arrowTopX + xOffset;
+                        const y2 = arrowTopY;
+                        
+                        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#2563eb" stroke-width="2"/>`;
+                        
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const len = Math.sqrt(dx * dx + dy * dy);
+                        const ux = dx / len;
+                        const uy = dy / len;
+                        const px = -uy;
+                        const py = ux;
+                        
+                        svg += `<polygon points="${x2},${y2} ${x2 - ux * arrowheadSize - px * arrowheadSize},${y2 - uy * arrowheadSize - py * arrowheadSize} ${x2 - ux * arrowheadSize + px * arrowheadSize},${y2 - uy * arrowheadSize + py * arrowheadSize}" fill="#2563eb"/>`;
+                    } else if (arrow === 'downArrow') {
+                        const x1 = arrowTopX + xOffset;
+                        const y1 = arrowTopY;
+                        const x2 = arrowBottomX + xOffset;
+                        const y2 = arrowBottomY;
+                        
+                        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#dc2626" stroke-width="2"/>`;
+                        
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const len = Math.sqrt(dx * dx + dy * dy);
+                        const ux = dx / len;
+                        const uy = dy / len;
+                        const px = -uy;
+                        const py = ux;
+                        
+                        svg += `<polygon points="${x2},${y2} ${x2 - ux * arrowheadSize - px * arrowheadSize},${y2 - uy * arrowheadSize - py * arrowheadSize} ${x2 - ux * arrowheadSize + px * arrowheadSize},${y2 - uy * arrowheadSize + py * arrowheadSize}" fill="#dc2626"/>`;
+                    }
+                });
+            } else if (hasArrows && notes.length === 0) {
+                const centerY = height / 2;
+                const centerX = width / 2;
+                const arrowheadSize = 6;
+                const arrowHeight = 40;
+                
+                arrows.forEach((arrow, idx) => {
+                    const xOffset = idx * 15;
+                    const arrowStartX = centerX + arrowHeight * 0.5 * skewTan + xOffset;
+                    const arrowEndX = centerX - arrowHeight * 0.5 * skewTan + xOffset;
+                    
+                    if (arrow === 'upArrow') {
+                        svg += `<line x1="${arrowStartX}" y1="${centerY + arrowHeight/2}" x2="${arrowEndX}" y2="${centerY - arrowHeight/2}" stroke="#2563eb" stroke-width="2"/>`;
+                        const tipX = arrowEndX;
+                        const tipY = centerY - arrowHeight / 2;
+                        svg += `<polygon points="${tipX},${tipY} ${tipX + 6},${tipY + 6} ${tipX - 6},${tipY + 6}" fill="#2563eb"/>`;
+                    } else if (arrow === 'downArrow') {
+                        svg += `<line x1="${arrowStartX}" y1="${centerY - arrowHeight/2}" x2="${arrowEndX}" y2="${centerY + arrowHeight/2}" stroke="#dc2626" stroke-width="2"/>`;
+                        const tipX = arrowEndX;
+                        const tipY = centerY + arrowHeight / 2;
+                        svg += `<polygon points="${tipX},${tipY} ${tipX + 6},${tipY - 6} ${tipX - 6},${tipY - 6}" fill="#dc2626"/>`;
+                    }
+                });
+            }
+            
+            svg += '</svg>';
+            return svg;
+        }
+
+        function completeHazzatSymbol() {
+            if (currentHazzatSymbol.length === 0) return;
+            
+            // Create a unique character representation for the symbol
+            const symbolData = JSON.stringify(currentHazzatSymbol);
+            const symbolChar = String.fromCharCode(0xE000 + Math.random() * 128); // Use private use unicode area
+            
+            // Add the SVG preview to the textarea
+            const textarea = document.getElementById('hazzatInput');
+            const svg = renderHazzatSymbol(currentHazzatSymbol);
+            
+            // Insert a marker/placeholder for the symbol
+            textarea.value += '◆'; // Use diamond as a placeholder
+            
+            currentHazzatSymbol = [];
+            updateHazzatPreview();
+            updateCompleteHazzatButton();
+        }
+
+        // Data structure for visualization: array of {copticChar, hazzatSymbols: []}
+        let visualizationData = [];
+        let currentCopticIndex = 0;
+        let currentHazzatIndex = 0;
+
         function startVisualization() {
             const input = document.getElementById('hazzatInput').value.trim();
             
@@ -895,8 +1096,16 @@
                 return;
             }
 
-            currentText = input;
-            currentCharIndex = 0;
+            // Parse text into groups: each Coptic char with its following Hazzat symbols
+            visualizationData = parseTextIntoGroups(input);
+            
+            if (visualizationData.length === 0) {
+                alert('No Coptic characters found!');
+                return;
+            }
+
+            currentCopticIndex = 0;
+            currentHazzatIndex = 0;
             
             const tab = document.getElementById('hazzat-tab');
             const displaySection = document.getElementById('displaySection');
@@ -906,76 +1115,149 @@
             });
             
             displaySection.classList.add('active');
-            document.getElementById('totalChars').textContent = currentText.length;
             
             displayCharacter();
             updateNavigationButtons();
         }
 
-        function displayCharacter() {
-            if (currentText.length === 0) return;
-
-            const char = currentText[currentCharIndex];
-            const charCode = char.charCodeAt(0);
+        function parseTextIntoGroups(text) {
+            const groups = [];
+            let currentGroup = null;
             
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (char === '◆') {
+                    // This is a Hazzat placeholder
+                    if (currentGroup) {
+                        currentGroup.hazzatSymbols.push('◆');
+                    }
+                } else {
+                    // This is a regular character
+                    if (currentGroup) {
+                        groups.push(currentGroup);
+                    }
+                    currentGroup = {
+                        copticChar: char,
+                        hazzatSymbols: []
+                    };
+                }
+            }
+            
+            // Don't forget the last group
+            if (currentGroup) {
+                groups.push(currentGroup);
+            }
+            
+            return groups;
+        }
+
+        function displayCharacter() {
+            if (visualizationData.length === 0) return;
+
+            const currentGroup = visualizationData[currentCopticIndex];
+            const copticChar = currentGroup.copticChar;
+            const charCode = copticChar.charCodeAt(0);
+            
+            // Display Coptic character at top
             const charDisplay = document.getElementById('characterDisplay');
-            charDisplay.textContent = char;
+            charDisplay.textContent = copticChar;
             charDisplay.style.fontFamily = `"${currentFont}", serif`;
             
-            // Display previous character
+            // Display previous Coptic character
             const prevCharDisplay = document.getElementById('prevCharacterDisplay');
             if (prevCharDisplay) {
-                if (currentCharIndex > 0) {
-                    prevCharDisplay.textContent = currentText[currentCharIndex - 1];
+                if (currentCopticIndex > 0) {
+                    prevCharDisplay.textContent = visualizationData[currentCopticIndex - 1].copticChar;
                     prevCharDisplay.style.fontFamily = `"${currentFont}", serif`;
                 } else {
                     prevCharDisplay.textContent = '';
                 }
             }
             
-            // Display next character
+            // Display next Coptic character
             const nextCharDisplay = document.getElementById('nextCharacterDisplay');
             if (nextCharDisplay) {
-                if (currentCharIndex < currentText.length - 1) {
-                    nextCharDisplay.textContent = currentText[currentCharIndex + 1];
+                if (currentCopticIndex < visualizationData.length - 1) {
+                    nextCharDisplay.textContent = visualizationData[currentCopticIndex + 1].copticChar;
                     nextCharDisplay.style.fontFamily = `"${currentFont}", serif`;
                 } else {
                     nextCharDisplay.textContent = '';
                 }
             }
             
-            document.getElementById('currentIndex').textContent = currentCharIndex + 1;
+            // Display Hazzat symbol below
+            const hazzatDisplay = document.getElementById('nextCharacterDisplay').parentElement.parentElement;
+            const hazzatSection = hazzatDisplay.querySelector('.hazzat-display-section');
+            
+            if (hazzatSection) {
+                if (currentGroup.hazzatSymbols.length > 0) {
+                    hazzatSection.style.display = 'block';
+                    hazzatSection.innerHTML = `<div style="text-align: center; padding: 20px; background: #f0f0f0; border-radius: 8px; margin-top: 20px;">
+                        <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Hazzat Symbol ${currentHazzatIndex + 1} of ${currentGroup.hazzatSymbols.length}</div>
+                        <div style="display: flex; justify-content: center;">
+                            ${currentGroup.hazzatSymbols[currentHazzatIndex] === '◆' ? '<svg width="120" height="80" viewBox="0 0 120 80"><rect width="120" height="80" fill="white" stroke="#ddd" stroke-width="1"/><text x="60" y="50" text-anchor="middle" font-size="14" fill="#999">Hazzat Symbol</text></svg>' : ''}
+                        </div>
+                    </div>`;
+                } else {
+                    hazzatSection.style.display = 'none';
+                }
+            }
+            
+            const totalSteps = visualizationData.reduce((sum, group) => sum + Math.max(1, group.hazzatSymbols.length), 0);
+            const currentStep = visualizationData.slice(0, currentCopticIndex).reduce((sum, group) => sum + Math.max(1, group.hazzatSymbols.length), 0) + (currentHazzatIndex + 1);
+            
+            document.getElementById('currentIndex').textContent = currentStep;
+            document.getElementById('totalChars').textContent = totalSteps;
             document.getElementById('characterCode').textContent = 
                 `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
         }
 
         function nextCharacter() {
-            if (currentCharIndex < currentText.length - 1) {
-                currentCharIndex++;
-                displayCharacter();
-                updateNavigationButtons();
+            const currentGroup = visualizationData[currentCopticIndex];
+            
+            if (currentHazzatIndex < currentGroup.hazzatSymbols.length - 1) {
+                // Move to next Hazzat in current group
+                currentHazzatIndex++;
+            } else if (currentCopticIndex < visualizationData.length - 1) {
+                // Move to next Coptic group
+                currentCopticIndex++;
+                currentHazzatIndex = 0;
             }
+            
+            displayCharacter();
+            updateNavigationButtons();
         }
 
         function previousCharacter() {
-            if (currentCharIndex > 0) {
-                currentCharIndex--;
-                displayCharacter();
-                updateNavigationButtons();
+            if (currentHazzatIndex > 0) {
+                // Move to previous Hazzat in current group
+                currentHazzatIndex--;
+            } else if (currentCopticIndex > 0) {
+                // Move to previous Coptic group
+                currentCopticIndex--;
+                const prevGroup = visualizationData[currentCopticIndex];
+                currentHazzatIndex = Math.max(0, prevGroup.hazzatSymbols.length - 1);
             }
+            
+            displayCharacter();
+            updateNavigationButtons();
         }
 
         function updateNavigationButtons() {
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
 
-            prevBtn.disabled = currentCharIndex === 0;
-            nextBtn.disabled = currentCharIndex === currentText.length - 1;
+            prevBtn.disabled = currentCopticIndex === 0 && currentHazzatIndex === 0;
+            
+            const isLastCoptic = currentCopticIndex === visualizationData.length - 1;
+            const isLastHazzat = currentHazzatIndex === visualizationData[currentCopticIndex].hazzatSymbols.length - 1;
+            nextBtn.disabled = isLastCoptic && isLastHazzat;
         }
 
         function resetVisualization() {
-            currentText = '';
-            currentCharIndex = 0;
+            visualizationData = [];
+            currentCopticIndex = 0;
+            currentHazzatIndex = 0;
             
             document.getElementById('hazzatInput').value = '';
             const tab = document.getElementById('hazzat-tab');
