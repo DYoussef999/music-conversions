@@ -423,7 +423,24 @@
 
         // Coptic Unicode characters (U+2C80 - U+2CF3)
         const copticCharacters = [];
+        
+        // Add Coptic Unicode block (U+2C80 - U+2CF3)
         for (let i = 0x2C80; i <= 0x2CF3; i++) {
+            copticCharacters.push(String.fromCharCode(i));
+        }
+        
+        // Add Latin Extended-A and B (for transliteration and variants)
+        for (let i = 0x0100; i <= 0x017F; i++) {
+            copticCharacters.push(String.fromCharCode(i));
+        }
+        
+        // Add Greek Extended (sometimes used in liturgical texts)
+        for (let i = 0x1F00; i <= 0x1FFF; i++) {
+            copticCharacters.push(String.fromCharCode(i));
+        }
+        
+        // Add Basic Latin with diacritics
+        for (let i = 0x0300; i <= 0x036F; i++) {
             copticCharacters.push(String.fromCharCode(i));
         }
 
