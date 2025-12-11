@@ -1335,6 +1335,20 @@
             const nextCharDisplay = document.getElementById('nextCharacterDisplay');
             const wrappers = document.querySelectorAll('.character-wrapper');
             
+            // Always update the character display content immediately
+            if (currentCopticIndex > 0) {
+                prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
+            } else {
+                prevCharDisplay.textContent = '';
+            }
+            charDisplay.textContent = copticChar;
+            charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+            if (currentCopticIndex < visualizationSteps.length - 1) {
+                nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
+            } else {
+                nextCharDisplay.textContent = '';
+            }
+            
             // Only animate if index actually changed
             if (currentCopticIndex !== previousCopticIndex) {
                 // Helper to clear all animation classes
@@ -1390,40 +1404,9 @@
                             wrappers[2].classList.add('fade-out-right');
                         }
                     }
-                    
-                    // After animation completes, update content and reset for next cycle
-                    setTimeout(() => {
-                        // Update content
-                        if (currentCopticIndex > 0) {
-                            prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
-                        } else {
-                            prevCharDisplay.textContent = '';
-                        }
-                        charDisplay.textContent = copticChar;
-                        charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
-                        if (currentCopticIndex < visualizationSteps.length - 1) {
-                            nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
-                        } else {
-                            nextCharDisplay.textContent = '';
-                        }
-                    }, 500);
                 });
                 
                 previousCopticIndex = currentCopticIndex;
-            } else {
-                // No animation needed, just update content directly
-                if (currentCopticIndex > 0) {
-                    prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
-                } else {
-                    prevCharDisplay.textContent = '';
-                }
-                charDisplay.textContent = copticChar;
-                charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
-                if (currentCopticIndex < visualizationSteps.length - 1) {
-                    nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
-                } else {
-                    nextCharDisplay.textContent = '';
-                }
             }
             
             // Display bottom section with Hazzat symbols
