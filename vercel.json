@@ -2,6 +2,7 @@
   "buildCommand": "echo 'Building...' && exit 0",
   "outputDirectory": ".",
   "public": true,
+  "cleanUrls": false,
   "headers": [
     {
       "source": "/hazzat-visualizer.html",
@@ -18,8 +19,18 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/fonts/:path*",
+      "destination": "/fonts/:path*"
     }
   ]
 }
