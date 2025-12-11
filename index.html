@@ -542,9 +542,9 @@
                 <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #333;">Hazzat Symbol Maker:</label>
                 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
-                    <button class="key-btn" onclick="addHazzatElement('shortNote')" style="background: #666; color: white;">▮</button>
-                    <button class="key-btn" onclick="addHazzatElement('normalNote')" style="background: #666; color: white;">▬</button>
-                    <button class="key-btn" onclick="addHazzatElement('longNote')" style="background: #666; color: white;">▭</button>
+                    <button class="key-btn" onclick="addHazzatElement('shortNote')" style="background: #666; color: white;">Short</button>
+                    <button class="key-btn" onclick="addHazzatElement('normalNote')" style="background: #666; color: white;">Normal</button>
+                    <button class="key-btn" onclick="addHazzatElement('longNote')" style="background: #666; color: white;">Long</button>
                     <button class="key-btn" onclick="addHazzatElement('upArrow')" style="background: #555; color: white;">⬆</button>
                     <button class="key-btn" onclick="addHazzatElement('downArrow')" style="background: #555; color: white;">⬇</button>
                     <button class="key-btn" onclick="removeLastHazzatElement()" style="background: #555; color: white;">⌫</button>
@@ -716,6 +716,7 @@
         let currentFont = ''; // Initialize currentFont variable
         let currentText = ''; // Initialize currentText variable
         let currentCharIndex = 0; // Initialize currentCharIndex variable
+        let lastCursorPosition = 0; // Track the last cursor position for proper text insertion
 
         // Generate dynamic font-face declarations
         function generateFontFaces() {
@@ -880,9 +881,18 @@
                         e.preventDefault();
                         const textarea = document.getElementById('hazzatInput');
                         
-                        // Always append to end of text
-                        textarea.value += char;
-                        textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+                        // Get current cursor position
+                        const cursorPos = textarea.selectionStart;
+                        const beforeCursor = textarea.value.substring(0, cursorPos);
+                        const afterCursor = textarea.value.substring(cursorPos);
+                        
+                        // Insert character at cursor position
+                        textarea.value = beforeCursor + char + afterCursor;
+                        
+                        // Move cursor to after the inserted character
+                        const newCursorPos = cursorPos + 1;
+                        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                        lastCursorPosition = newCursorPos;
                         textarea.focus();
                     });
                     
@@ -920,10 +930,18 @@
 
         function removeLastCharacter() {
             const textarea = document.getElementById('hazzatInput');
-            if (textarea.value.length > 0) {
-                textarea.value = textarea.value.slice(0, -1);
-                textarea.focus();
+            const cursorPos = textarea.selectionStart;
+            
+            if (cursorPos > 0) {
+                const beforeCursor = textarea.value.substring(0, cursorPos - 1);
+                const afterCursor = textarea.value.substring(cursorPos);
+                textarea.value = beforeCursor + afterCursor;
+                
+                const newCursorPos = cursorPos - 1;
+                textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                lastCursorPosition = newCursorPos;
             }
+            textarea.focus();
         }
 
         function updateCompleteHazzatButton() {
@@ -1079,14 +1097,18 @@
             // Add the SVG preview to the textarea
             const textarea = document.getElementById('hazzatInput');
             
-            // Save cursor position before modifying
+            // Get current cursor position
             const cursorPos = textarea.selectionStart;
+            const beforeCursor = textarea.value.substring(0, cursorPos);
+            const afterCursor = textarea.value.substring(cursorPos);
             
-            // Insert a marker/placeholder for the symbol
-            textarea.value += '◆'; // Use diamond as a placeholder
+            // Insert marker at cursor position
+            textarea.value = beforeCursor + '◆' + afterCursor;
             
-            // Restore cursor to end of new text
-            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+            // Move cursor to after the inserted marker
+            const newCursorPos = cursorPos + 1;
+            textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+            lastCursorPosition = newCursorPos;
             
             currentHazzatSymbol = [];
             updateHazzatPreview();
