@@ -994,7 +994,7 @@
             
             let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; max-width: 150px; height: auto; margin: 0 5px;">`;
             
-            svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
+            svg += `<rect width="${width}" height="${height}" fill="transparent" stroke="none"/>`;
             
             const startY = 10;
             const baseRightX = 60;
@@ -1280,10 +1280,38 @@
                 const currentSymbol = hazzatSymbols[currentHazzatIndex];
                 
                 if (currentSymbol && currentSymbol.data && currentSymbol.data.elements) {
+                    // Render previous hazzat (if exists)
+                    let prevHazzatSvg = '';
+                    if (currentHazzatIndex > 0) {
+                        const prevSymbol = hazzatSymbols[currentHazzatIndex - 1];
+                        if (prevSymbol && prevSymbol.data && prevSymbol.data.elements) {
+                            prevHazzatSvg = renderHazzatSymbol(prevSymbol.data.elements);
+                        }
+                    }
+                    
+                    // Render current hazzat
                     const svg = renderHazzatSymbol(currentSymbol.data.elements);
+                    
+                    // Render next hazzat (if exists)
+                    let nextHazzatSvg = '';
+                    if (currentHazzatIndex < hazzatSymbols.length - 1) {
+                        const nextSymbol = hazzatSymbols[currentHazzatIndex + 1];
+                        if (nextSymbol && nextSymbol.data && nextSymbol.data.elements) {
+                            nextHazzatSvg = renderHazzatSymbol(nextSymbol.data.elements);
+                        }
+                    }
+                    
                     hazzatSection.innerHTML = `
-                        <div style="text-align: center; padding: 20px;">
-                            ${svg}
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
+                            <div style="opacity: 0.4;">
+                                ${prevHazzatSvg}
+                            </div>
+                            <div>
+                                ${svg}
+                            </div>
+                            <div style="opacity: 0.4;">
+                                ${nextHazzatSvg}
+                            </div>
                         </div>
                         <div style="text-align: center; font-size: 14px; color: #666;">
                             Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
@@ -1348,7 +1376,8 @@
             visualizationSteps = [];
             currentCopticIndex = 0;
             currentHazzatIndex = 0;
-            hazzatSymbolStorage = []; // Clear symbol storage
+            // NOTE: Do NOT clear hazzatSymbolStorage here - it should persist between visualizations
+            // Only clear it when the user explicitly clears the textarea
             
             // Show input section again
             const inputSection = document.querySelector('.font-select-section');
