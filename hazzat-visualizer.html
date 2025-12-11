@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hazzat Font Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap" rel="stylesheet">
+    <style>
+        /* HCOC-Coptic-Fonts */
+        @font-face { font-family: 'Abraham'; src: url('HCOC-Coptic-Fonts/AbrahamNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Antoni10'; src: url('HCOC-Coptic-Fonts/ANTONI10.TTF') format('truetype'); }
+        @font-face { font-family: 'Antoni12'; src: url('HCOC-Coptic-Fonts/ANTONI12.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio0'; src: url('HCOC-Coptic-Fonts/ANTONIO0.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio2'; src: url('HCOC-Coptic-Fonts/ANTONIO2.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio4'; src: url('HCOC-Coptic-Fonts/ANTONIO4.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio5'; src: url('HCOC-Coptic-Fonts/ANTONIO5.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio6'; src: url('HCOC-Coptic-Fonts/ANTONIO6.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio7'; src: url('HCOC-Coptic-Fonts/ANTONIO7.TTF') format('truetype'); }
+        @font-face { font-family: 'AntonioA'; src: url('HCOC-Coptic-Fonts/ANTONIOA.TTF') format('truetype'); }
+        @font-face { font-family: 'Athanasius'; src: url('HCOC-Coptic-Fonts/Athanasius.ttf') format('truetype'); }
+        @font-face { font-family: 'Avva Shenouda'; src: url('HCOC-Coptic-Fonts/Avva_Shenouda.ttf') format('truetype'); }
+        @font-face { font-family: 'Avva ShenoudaNormal'; src: url('HCOC-Coptic-Fonts/Avva_ShenoudaNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Bishop Tadros'; src: url('HCOC-Coptic-Fonts/Bishop Tadros Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'Bishoy'; src: url('HCOC-Coptic-Fonts/BishoyNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Cog'; src: url('HCOC-Coptic-Fonts/Cog.ttf') format('truetype'); }
+        @font-face { font-family: 'CogB'; src: url('HCOC-Coptic-Fonts/COGB.TTF') format('truetype'); }
+        @font-face { font-family: 'Copt'; src: url('HCOC-Coptic-Fonts/copt.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic'; src: url('HCOC-Coptic-Fonts/Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic1'; src: url('HCOC-Coptic-Fonts/Coptic1.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic II'; src: url('HCOC-Coptic-Fonts/coptic_ii_nor.TTF') format('truetype'); }
+        @font-face { font-family: 'CopticNew'; src: url('HCOC-Coptic-Fonts/coptonew.ttf') format('truetype'); }
+        @font-face { font-family: 'Courier'; src: url('HCOC-Coptic-Fonts/COURIERJ.TTF') format('truetype'); }
+        @font-face { font-family: 'CourierN'; src: url('HCOC-Coptic-Fonts/COURIERN.TTF') format('truetype'); }
+        @font-face { font-family: 'CourierO'; src: url('HCOC-Coptic-Fonts/COURIERO.TTF') format('truetype'); }
+        @font-face { font-family: 'CS Avva Shenouda'; src: url('HCOC-Coptic-Fonts/CS Avva Shenouda.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Copt'; src: url('HCOC-Coptic-Fonts/CS Copt.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Coptic Manuscript'; src: url('HCOC-Coptic-Fonts/CS Coptic Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Copto Manuscript'; src: url('HCOC-Coptic-Fonts/CS Copto Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Koptos Manuscript'; src: url('HCOC-Coptic-Fonts/CS Koptos Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS New Athanasius'; src: url('HCOC-Coptic-Fonts/CS New Athanasius.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Pishoi'; src: url('HCOC-Coptic-Fonts/CS Pishoi.ttf') format('truetype'); }
+        @font-face { font-family: 'FaithSym'; src: url('HCOC-Coptic-Fonts/FAITHSYM.TTF') format('truetype'); }
+        @font-face { font-family: 'Georges'; src: url('HCOC-Coptic-Fonts/GeorgesNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Koptos'; src: url('HCOC-Coptic-Fonts/KOPTOS.TTF') format('truetype'); }
+        @font-face { font-family: 'Kyri'; src: url('HCOC-Coptic-Fonts/Kyri000.ttf') format('truetype'); }
+        @font-face { font-family: 'Kyrillos'; src: url('HCOC-Coptic-Fonts/KyrillosNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Marcos'; src: url('HCOC-Coptic-Fonts/MarcosNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Marina'; src: url('HCOC-Coptic-Fonts/MarinaNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Mark'; src: url('HCOC-Coptic-Fonts/Mark.ttf') format('truetype'); }
+        @font-face { font-family: 'Mena'; src: url('HCOC-Coptic-Fonts/Mena0001.ttf') format('truetype'); }
+        @font-face { font-family: 'NewAth'; src: url('HCOC-Coptic-Fonts/NEWATH.TTF') format('truetype'); }
+        @font-face { font-family: 'Nopher'; src: url('HCOC-Coptic-Fonts/nopher_2.TTF') format('truetype'); }
+        @font-face { font-family: 'Pishoi'; src: url('HCOC-Coptic-Fonts/pishoi.TTF') format('truetype'); }
+        @font-face { font-family: 'Pope Shenouda'; src: url('HCOC-Coptic-Fonts/Pope Shenouda III Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'SpacMim'; src: url('HCOC-Coptic-Fonts/SPACHMIM.TTF') format('truetype'); }
+        @font-face { font-family: 'Hazzat'; src: url('hazzat1_10a.ttf') format('truetype'); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .font-select-section {
+            margin-bottom: 20px;
+        }
+
+        .font-select-section label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        #fontSelect {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        #fontSelect:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: var(--current-font, 'Hazzat'), serif;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .keyboard-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .keyboard-section label {
+            display: block;
+            margin-bottom: 12px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            gap: 5px;
+        }
+
+        .key-btn {
+            padding: 8px;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            line-height: 1;
+            font-family: inherit !important;
+        }
+
+        .key-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .key-btn:active {
+            transform: translateY(0);
+        }
+
+        .detection-alert {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #856404;
+            display: none;
+        }
+
+        .detection-alert.show {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .display-section {
+            display: none;
+            text-align: center;
+        }
+
+        .display-section.active {
+            display: block;
+        }
+
+        .character-display {
+            background: #f9f9f9;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            padding: 60px 40px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .character-display:hover {
+            background: #f0f0f0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .character {
+            font-family: var(--current-font, 'Hazzat'), serif;
+            font-size: 120px;
+            color: #333;
+            line-height: 1;
+        }
+
+        .info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .progress {
+            font-size: 16px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+
+        .btn-nav:hover:not(:disabled) {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-nav:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .character-code {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        .instructions {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .character {
+                font-size: 80px;
+            }
+
+            .character-display {
+                padding: 40px 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Hazzat Font Visualizer</h1>
+
+        <div class="input-section">
+            <div class="instructions">
+                💡 Select a Coptic font, paste your Coptic hymn text below, then click "Start" to view it character by character.
+            </div>
+
+            <div class="font-select-section">
+                <label for="fontSelect">Coptic Font:</label>
+                <select id="fontSelect" onchange="changeCopticFont()">
+                    <option value="Hazzat">Hazzat</option>
+                    <option value="Abraham">Abraham</option>
+                    <option value="Antoni10">Antoni10</option>
+                    <option value="Antoni12">Antoni12</option>
+                    <option value="Antonio0">Antonio0</option>
+                    <option value="Antonio2">Antonio2</option>
+                    <option value="Antonio4">Antonio4</option>
+                    <option value="Antonio5">Antonio5</option>
+                    <option value="Antonio6">Antonio6</option>
+                    <option value="Antonio7">Antonio7</option>
+                    <option value="AntonioA">AntonioA</option>
+                    <option value="Athanasius">Athanasius</option>
+                    <option value="Avva Shenouda">Avva Shenouda</option>
+                    <option value="Avva ShenoudaNormal">Avva ShenoudaNormal</option>
+                    <option value="Bishop Tadros">Bishop Tadros</option>
+                    <option value="Bishoy">Bishoy</option>
+                    <option value="Cog">Cog</option>
+                    <option value="CogB">CogB</option>
+                    <option value="Copt">Copt</option>
+                    <option value="Coptic">Coptic</option>
+                    <option value="Coptic1">Coptic1</option>
+                    <option value="Coptic II">Coptic II</option>
+                    <option value="CopticNew">CopticNew</option>
+                    <option value="Courier">Courier</option>
+                    <option value="CourierN">CourierN</option>
+                    <option value="CourierO">CourierO</option>
+                    <option value="CS Avva Shenouda">CS Avva Shenouda</option>
+                    <option value="CS Copt">CS Copt</option>
+                    <option value="CS Coptic Manuscript">CS Coptic Manuscript</option>
+                    <option value="CS Copto Manuscript">CS Copto Manuscript</option>
+                    <option value="CS Koptos Manuscript">CS Koptos Manuscript</option>
+                    <option value="CS New Athanasius">CS New Athanasius</option>
+                    <option value="CS Pishoi">CS Pishoi</option>
+                    <option value="FaithSym">FaithSym</option>
+                    <option value="Georges">Georges</option>
+                    <option value="Koptos">Koptos</option>
+                    <option value="Kyri">Kyri</option>
+                    <option value="Kyrillos">Kyrillos</option>
+                    <option value="Marcos">Marcos</option>
+                    <option value="Marina">Marina</option>
+                    <option value="Mark">Mark</option>
+                    <option value="Mena">Mena</option>
+                    <option value="NewAth">NewAth</option>
+                    <option value="Nopher">Nopher</option>
+                    <option value="Pishoi">Pishoi</option>
+                    <option value="Pope Shenouda">Pope Shenouda</option>
+                    <option value="SpacMim">SpacMim</option>
+                </select>
+            </div>
+
+            <label for="hazzatInput">Coptic Text:</label>
+            <textarea 
+                id="hazzatInput" 
+                placeholder="Click keyboard buttons below or type to enter text..."
+            ></textarea>
+
+            <div class="keyboard-section">
+                <label>Coptic Character Keyboard:</label>
+                <div class="keyboard-grid" id="keyboardGrid"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-start" onclick="startVisualization()">Start</button>
+                <button class="btn-reset" onclick="resetVisualization()">Clear</button>
+            </div>
+        </div>
+
+        <div class="display-section" id="displaySection">
+            <div class="info">
+                <span class="progress">
+                    Character <span id="currentIndex">1</span> of <span id="totalChars">0</span>
+                </span>
+                <button class="btn-nav" onclick="resetVisualization()">← Back</button>
+            </div>
+
+            <div class="character-display" onclick="nextCharacter()">
+                <div>
+                    <div class="character" id="characterDisplay">א</div>
+                    <div class="character-code" id="characterCode"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-nav" id="prevBtn" onclick="previousCharacter()">← Previous</button>
+                <button class="btn-nav" id="nextBtn" onclick="nextCharacter()">Next →</button>
+            </div>
+
+            <div style="margin-top: 15px; font-size: 12px; color: #999;">
+                Click on the character box or press Next/Previous to navigate
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Font list from HCOC-Coptic-Fonts folder
+        const copticFonts = [
+            'Abraham', 'Antoni10', 'Antoni12', 'Antonio0', 'Antonio2', 'Antonio4', 'Antonio5', 'Antonio6', 'Antonio7',
+            'AntonioA', 'Athanasius', 'Avva Shenouda', 'Avva ShenoudaNormal', 'Bishop Tadros', 'Bishoy', 'Cog', 'CogB',
+            'Copt', 'Coptic', 'Coptic1', 'Coptic II', 'CopticNew', 'Courier', 'CourierN', 'CourierO', 'CS Avva Shenouda',
+            'CS Copt', 'CS Coptic Manuscript', 'CS Copto Manuscript', 'CS Koptos Manuscript', 'CS New Athanasius', 'CS Pishoi',
+            'FaithSym', 'Georges', 'Koptos', 'Kyri', 'Kyrillos', 'Marcos', 'Marina', 'Mark', 'Mena', 'NewAth', 'Nopher',
+            'Pishoi', 'Pope Shenouda', 'SpacMim', 'Hazzat'
+        ];
+
+        // Extended Coptic Unicode range (U+2C80 - U+2CF3)
+        const copticCharacters = [
+            // Main Coptic block
+            '\u2C80', '\u2C81', '\u2C82', '\u2C83', '\u2C84', '\u2C85', '\u2C86', '\u2C87', '\u2C88', '\u2C89',
+            '\u2C8A', '\u2C8B', '\u2C8C', '\u2C8D', '\u2C8E', '\u2C8F', '\u2C90', '\u2C91', '\u2C92', '\u2C93',
+            '\u2C94', '\u2C95', '\u2C96', '\u2C97', '\u2C98', '\u2C99', '\u2C9A', '\u2C9B', '\u2C9C', '\u2C9D',
+            '\u2C9E', '\u2C9F', '\u2CA0', '\u2CA1', '\u2CA2', '\u2CA3', '\u2CA4', '\u2CA5', '\u2CA6', '\u2CA7',
+            '\u2CA8', '\u2CA9', '\u2CAA', '\u2CAB', '\u2CAC', '\u2CAD', '\u2CAE', '\u2CAF', '\u2CB0', '\u2CB1',
+            '\u2CB2', '\u2CB3', '\u2CB4', '\u2CB5', '\u2CB6', '\u2CB7', '\u2CB8', '\u2CB9', '\u2CBA', '\u2CBB',
+            '\u2CBC', '\u2CBD', '\u2CBE', '\u2CBF', '\u2CC0', '\u2CC1', '\u2CC2', '\u2CC3', '\u2CC4', '\u2CC5',
+            '\u2CC6', '\u2CC7', '\u2CC8', '\u2CC9', '\u2CCA', '\u2CCB', '\u2CCC', '\u2CCD', '\u2CCE', '\u2CCF',
+            '\u2CD0', '\u2CD1', '\u2CD2', '\u2CD3', '\u2CD4', '\u2CD5', '\u2CD6', '\u2CD7', '\u2CD8', '\u2CD9',
+            '\u2CDA', '\u2CDB', '\u2CDC', '\u2CDD', '\u2CDE', '\u2CDF', '\u2CE0', '\u2CE1', '\u2CE2', '\u2CE3',
+            '\u2CE4', '\u2CE5', '\u2CE6', '\u2CE7', '\u2CE8', '\u2CE9', '\u2CEA', '\u2CEB', '\u2CEC', '\u2CED',
+            '\u2CEE', '\u2CEF', '\u2CF0', '\u2CF1', '\u2CF2', '\u2CF3'
+        ];
+
+        let currentText = '';
+        let currentCharIndex = 0;
+        let currentFont = 'Hazzat';
+
+        // Initialize font selector and keyboard
+        window.addEventListener('DOMContentLoaded', () => {
+            updateFontVariable();
+            buildKeyboard();
+        });
+
+        function updateFontVariable() {
+            document.documentElement.style.setProperty('--current-font', `'${currentFont}'`);
+            const textarea = document.getElementById('hazzatInput');
+            textarea.style.fontFamily = `'${currentFont}', serif`;
+        }
+
+        function changeCopticFont() {
+            currentFont = document.getElementById('fontSelect').value;
+            updateFontVariable();
+            buildKeyboard();
+            
+            if (currentText.length > 0) {
+                displayCharacter();
+            }
+        }
+
+        function buildKeyboard() {
+            const grid = document.getElementById('keyboardGrid');
+            grid.innerHTML = '';
+            grid.style.fontFamily = `"${currentFont}", serif`;
+            
+            copticCharacters.forEach(char => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'key-btn';
+                btn.textContent = char;
+                btn.style.fontFamily = `"${currentFont}", serif`;
+                btn.title = `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+                
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const textarea = document.getElementById('hazzatInput');
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    
+                    currentText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
+                    textarea.value = currentText;
+                    textarea.selectionStart = textarea.selectionEnd = start + 1;
+                    textarea.focus();
+                });
+                
+                grid.appendChild(btn);
+            });
+        }
+
+        function startVisualization() {
+            const input = document.getElementById('hazzatInput').value.trim();
+            
+            if (!input) {
+                alert('Please enter some text first!');
+                return;
+            }
+
+            currentText = input;
+            currentCharIndex = 0;
+            
+            document.querySelector('.input-section').style.display = 'none';
+            document.getElementById('displaySection').classList.add('active');
+            document.getElementById('totalChars').textContent = currentText.length;
+            
+            displayCharacter();
+            updateNavigationButtons();
+        }
+
+        function displayCharacter() {
+            if (currentText.length === 0) return;
+
+            const char = currentText[currentCharIndex];
+            const charCode = char.charCodeAt(0);
+            
+            const charDisplay = document.getElementById('characterDisplay');
+            charDisplay.textContent = char;
+            charDisplay.style.fontFamily = `'${currentFont}', serif`;
+            
+            document.getElementById('currentIndex').textContent = currentCharIndex + 1;
+            document.getElementById('characterCode').textContent = 
+                `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
+        }
+
+        function nextCharacter() {
+            if (currentCharIndex < currentText.length - 1) {
+                currentCharIndex++;
+                displayCharacter();
+                updateNavigationButtons();
+            }
+        }
+
+        function previousCharacter() {
+            if (currentCharIndex > 0) {
+                currentCharIndex--;
+                displayCharacter();
+                updateNavigationButtons();
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = currentCharIndex === 0;
+            nextBtn.disabled = currentCharIndex === currentText.length - 1;
+        }
+
+        function resetVisualization() {
+            currentText = '';
+            currentCharIndex = 0;
+            
+            document.getElementById('hazzatInput').value = '';
+            document.querySelector('.input-section').style.display = 'block';
+            document.getElementById('displaySection').classList.remove('active');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('displaySection').classList.contains('active')) {
+                if (e.key === 'ArrowRight') {
+                    nextCharacter();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowLeft') {
+                    previousCharacter();
+                    e.preventDefault();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

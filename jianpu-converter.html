@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicXML to Jianpu Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area:hover {
+            border-color: #9ca3af;
+            background: #f9fafb;
+        }
+
+        .upload-area svg {
+            width: 48px;
+            height: 48px;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .error {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #ea580c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c2410c;
+        }
+
+        .btn-secondary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1d4ed8;
+        }
+
+        .jianpu-display {
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 2rem;
+            background: #fffbeb;
+            display: none;
+        }
+
+        .jianpu-display.active {
+            display: block;
+        }
+
+        .music-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .music-composer {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .music-info {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #374151;
+            margin-bottom: 2rem;
+        }
+
+        .notes-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            font-size: 2rem;
+            font-family: 'Courier New', monospace;
+            min-height: 100px;
+        }
+
+        .note {
+            position: relative;
+            display: inline-block;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .octave-dots-above {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+        }
+
+        .octave-dots-below {
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+        }
+
+        .legend {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 6px;
+        }
+
+        .legend h3 {
+            margin-bottom: 0.75rem;
+            color: #1e40af;
+        }
+
+        .legend ul {
+            list-style: none;
+            color: #374151;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .upload-area,
+            .button-group,
+            .legend,
+            .subtitle {
+                display: none !important;
+            }
+
+            .jianpu-display {
+                border: none;
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MusicXML to Jianpu Converter</h1>
+        <p class="subtitle">Convert Western music notation to Chinese numbered musical notation (简谱)</p>
+
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <div class="upload-text">Click to upload MusicXML file</div>
+            <input type="file" id="fileInput" accept=".xml,.musicxml" onchange="handleFileUpload(event)">
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div class="button-group" id="buttonGroup" style="display: none;">
+            <button class="btn-primary" onclick="showWebView()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                Web View
+            </button>
+            <button class="btn-secondary" onclick="window.print()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Print/PDF
+            </button>
+        </div>
+
+        <div id="jianpuDisplay" class="jianpu-display">
+            <div class="music-title" id="musicTitle"></div>
+            <div class="music-composer" id="musicComposer"></div>
+            <div class="music-info" id="musicInfo"></div>
+            <div class="notes-container" id="notesContainer"></div>
+        </div>
+
+        <div class="legend">
+            <h3>Jianpu Notation Guide:</h3>
+            <ul>
+                <li>• Numbers 1-7 represent do, re, mi, fa, sol, la, ti</li>
+                <li>• Dots above (•) = higher octave, dots below = lower octave</li>
+                <li>• 0 = rest</li>
+                <li>• # = sharp, ♭ = flat</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentJianpuData = null;
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const xmlText = e.target.result;
+                    convertToJianpu(xmlText);
+                    hideError();
+                } catch (err) {
+                    showError('Error reading file: ' + err.message);
+                }
+            };
+            reader.onerror = function() {
+                showError('Error reading file');
+            };
+            reader.readAsText(file);
+        }
+
+        function convertToJianpu(xmlText) {
+            try {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+                
+                const parserError = xmlDoc.querySelector('parsererror');
+                if (parserError) {
+                    throw new Error('Invalid MusicXML file');
+                }
+
+                // Extract metadata
+                const title = xmlDoc.querySelector('work-title')?.textContent || 
+                             xmlDoc.querySelector('movement-title')?.textContent || 
+                             'Untitled';
+                const composer = xmlDoc.querySelector('creator[type="composer"]')?.textContent || 
+                                xmlDoc.querySelector('creator')?.textContent || 
+                                'Unknown';
+                
+                // Get key signature
+                const fifths = parseInt(xmlDoc.querySelector('fifths')?.textContent || '0');
+                const keyMap = {
+                    '-7': 'C♭', '-6': 'G♭', '-5': 'D♭', '-4': 'A♭', '-3': 'E♭', '-2': 'B♭', '-1': 'F',
+                    '0': 'C', '1': 'G', '2': 'D', '3': 'A', '4': 'E', '5': 'B', '6': 'F♯', '7': 'C♯'
+                };
+                const key = keyMap[fifths] || 'C';
+                
+                // Get time signature
+                const beats = xmlDoc.querySelector('beats')?.textContent || '4';
+                const beatType = xmlDoc.querySelector('beat-type')?.textContent || '4';
+                const timeSignature = `${beats}/${beatType}`;
+
+                // Parse notes
+                const notes = Array.from(xmlDoc.querySelectorAll('note'));
+                const jianpuNotes = [];
+                
+                notes.forEach(note => {
+                    const isRest = note.querySelector('rest') !== null;
+                    
+                    if (isRest) {
+                        jianpuNotes.push({ type: 'rest', display: '0' });
+                        return;
+                    }
+
+                    const pitch = note.querySelector('pitch');
+                    if (!pitch) return;
+
+                    const step = pitch.querySelector('step')?.textContent;
+                    const octave = parseInt(pitch.querySelector('octave')?.textContent || '4');
+                    const alter = parseInt(pitch.querySelector('alter')?.textContent || '0');
+                    
+                    // Convert to jianpu number (1-7)
+                    const stepMap = { 'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'A': 6, 'B': 7 };
+                    let number = stepMap[step];
+                    
+                    // Calculate octave offset (middle octave is 4)
+                    const octaveOffset = octave - 4;
+                    
+                    // Build display
+                    let displayNumber = number.toString();
+                    if (alter === 1) displayNumber = '#' + displayNumber;
+                    if (alter === -1) displayNumber = '♭' + displayNumber;
+                    
+                    jianpuNotes.push({
+                        type: 'note',
+                        number: displayNumber,
+                        octaveOffset: octaveOffset
+                    });
+                });
+
+                currentJianpuData = {
+                    title,
+                    composer,
+                    key,
+                    timeSignature,
+                    notes: jianpuNotes
+                };
+
+                displayJianpu();
+            } catch (err) {
+                showError('Error converting to jianpu: ' + err.message);
+            }
+        }
+
+        function displayJianpu() {
+            if (!currentJianpuData) return;
+
+            document.getElementById('musicTitle').textContent = currentJianpuData.title;
+            document.getElementById('musicComposer').textContent = currentJianpuData.composer;
+            document.getElementById('musicInfo').textContent = 
+                `Key: ${currentJianpuData.key} | Time: ${currentJianpuData.timeSignature}`;
+
+            const notesContainer = document.getElementById('notesContainer');
+            notesContainer.innerHTML = '';
+
+            currentJianpuData.notes.forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'note';
+
+                if (note.type === 'rest') {
+                    noteDiv.textContent = '0';
+                } else {
+                    // Add octave dots above
+                    if (note.octaveOffset > 0) {
+                        const dotsAbove = document.createElement('div');
+                        dotsAbove.className = 'octave-dots-above';
+                        dotsAbove.textContent = '•'.repeat(Math.abs(note.octaveOffset));
+                        noteDiv.appendChild(dotsAbove);
+                    }
+
+                    // Add the number
+                    const numberSpan = document.createElement('span');
+                    numberSpan.textContent = note.number;
+                    noteDiv.appendChild(numberSpan);
+
+                    // Add octave dots below
+                    if (note.octaveOffset < 0) {
+                        const dotsBelow = document.createElement('div');
+                        dotsBelow.className = 'octave-dots-below';
+                        dotsBelow.textContent = '•'.repeat(Math.abs(note.octaveOffset));
+                        noteDiv.appendChild(dotsBelow);
+                    }
+                }
+
+                notesContainer.appendChild(noteDiv);
+            });
+
+            document.getElementById('jianpuDisplay').classList.add('active');
+            document.getElementById('buttonGroup').style.display = 'flex';
+        }
+
+        function showWebView() {
+            // Already in web view, just scroll to display
+            document.getElementById('jianpuDisplay').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
