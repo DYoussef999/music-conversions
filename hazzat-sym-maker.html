@@ -379,7 +379,7 @@
             // Dimensions
             const noteHeight = 12;
             const noteSpacing = 6;
-            const arrowWidth = 30;
+            const arrowWidth = 20;
             const padding = 10;
             const rightAlignX = 60;
             
@@ -396,16 +396,26 @@
             svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
             
             const startY = hasVibrato ? 30 : 10;
-            const arrowsBaseX = contentWidth + padding;
+            const arrowsBaseX = contentWidth + padding - 5;
             
-            // Vibrato at top (always) - made larger
+            // Vibrato at top (always) - wavy sine wave
             if (hasVibrato) {
-                svg += `<text x="${width/2}" y="24" font-size="28" fill="#7c3aed" font-weight="bold" text-anchor="middle">~</text>`;
+                const vibratoStartX = width / 2 - 20;
+                const vibratoY = 15;
+                let vibPath = `M ${vibratoStartX} ${vibratoY}`;
+                for (let i = 0; i <= 4; i++) {
+                    const x = vibratoStartX + (i * 10);
+                    const y = vibratoY + (Math.sin(i * Math.PI / 2) * 4);
+                    vibPath += ` Q ${x + 5} ${y + 4}, ${x + 10} ${y}`;
+                }
+                svg += `<path d="${vibPath}" stroke="#7c3aed" stroke-width="2" fill="none" stroke-linecap="round"/>`;
             }
             
-            // Notes stacked vertically - all ending at same right point
+            // Notes stacked vertically from bottom to top
             notes.forEach((note, index) => {
-                const y = startY + (index * noteSpacing) + noteHeight / 2;
+                // Draw from bottom up: last note at bottom, first note higher up
+                const noteIndex = notes.length - 1 - index;
+                const y = startY + (noteIndex * noteSpacing) + noteHeight / 2;
                 let dashLength = 0;
                 
                 if (note === 'shortNote') {
@@ -425,11 +435,11 @@
             if (hasArrows && notes.length > 0) {
                 const arrowStartY = startY;
                 const arrowEndY = startY + (notes.length - 1) * noteSpacing;
-                const arrowCenterX = arrowsBaseX + arrowWidth / 2;
+                const arrowCenterX = arrowsBaseX;
                 const arrowheadSize = 6;
                 
                 arrows.forEach((arrow, idx) => {
-                    const xOffset = idx * 12;
+                    const xOffset = idx * 10;
                     
                     if (arrow === 'upArrow') {
                         // Arrow pointing up
