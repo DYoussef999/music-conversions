@@ -1096,8 +1096,7 @@
             return svg;
         }
 
-        let hazzatSymbolStorage = {}; // Store symbol data indexed by diamond marker
-        let lastAddedGroupIndex = -1; // Track the last group that was added to
+        let hazzatSymbolStorage = []; // Store symbol data in order of insertion
 
         function completeHazzatSymbol() {
             if (currentHazzatSymbol.length === 0) return;
@@ -1110,20 +1109,16 @@
             const beforeCursor = textarea.value.substring(0, cursorPos);
             const afterCursor = textarea.value.substring(cursorPos);
             
-            // Create a unique marker for this symbol
-            const markerIndex = Object.keys(hazzatSymbolStorage).length;
-            const marker = `◆${markerIndex}`;
-            
-            // Store the symbol data
-            hazzatSymbolStorage[marker] = {
+            // Store the symbol data in array (order matters!)
+            hazzatSymbolStorage.push({
                 elements: [...currentHazzatSymbol]
-            };
+            });
             
-            // Insert marker at cursor position
-            textarea.value = beforeCursor + marker + afterCursor;
+            // Insert simple marker
+            textarea.value = beforeCursor + '◆' + afterCursor;
             
             // Move cursor to after the inserted marker
-            const newCursorPos = cursorPos + marker.length;
+            const newCursorPos = cursorPos + 1;
             textarea.selectionStart = textarea.selectionEnd = newCursorPos;
             lastCursorPosition = newCursorPos;
             textarea.focus();
@@ -1187,37 +1182,28 @@
         function parseTextIntoSteps(text) {
             const groups = [];
             let currentGroup = null;
+            let hazzatIndex = 0; // Counter for which hazzat we're on
             
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
                 
-                // Check if this is a hazzat marker (◆ followed by optional digits)
+                // Check if this is a hazzat marker
                 if (char === '◆') {
-                    // Extract the marker (◆ plus any following digits)
-                    let marker = '◆';
-                    let j = i + 1;
-                    while (j < text.length && /\d/.test(text[j])) {
-                        marker += text[j];
-                        j++;
-                    }
-                    i = j - 1; // Skip past the digits we just read
-                    
                     // This is a Hazzat placeholder - add to current group
                     if (currentGroup) {
                         currentGroup.hazzatSymbols.push({
-                            marker: marker,
-                            data: hazzatSymbolStorage[marker]
+                            data: hazzatSymbolStorage[hazzatIndex]
                         });
                     } else {
                         // If no current group, create one for this orphaned Hazzat
                         currentGroup = {
                             copticChar: '',
                             hazzatSymbols: [{
-                                marker: marker,
-                                data: hazzatSymbolStorage[marker]
+                                data: hazzatSymbolStorage[hazzatIndex]
                             }]
                         };
                     }
+                    hazzatIndex++; // Move to next stored hazzat
                 } else if (char.trim()) {
                     // This is a regular character
                     if (currentGroup && currentGroup.copticChar) {
@@ -1362,7 +1348,7 @@
             visualizationSteps = [];
             currentCopticIndex = 0;
             currentHazzatIndex = 0;
-            hazzatSymbolStorage = {}; // Clear symbol storage
+            hazzatSymbolStorage = []; // Clear symbol storage
             
             // Show input section again
             const inputSection = document.querySelector('.font-select-section');
