@@ -432,6 +432,10 @@
 
             <div class="keyboard-section">
                 <label>Coptic Character Keyboard:</label>
+                <div style="background: #e8f4f8; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; border: 1px solid #b0dfe6;">
+                    <strong>Current Font:</strong> <span id="currentFontDisplay" style="color: #667eea; font-family: monospace; font-weight: bold;">Hazzat</span>
+                    <span id="charCountDisplay" style="margin-left: 15px; color: #666;">Characters: 0</span>
+                </div>
                 <div class="keyboard-grid" id="keyboardGrid"></div>
             </div>
 
@@ -595,6 +599,10 @@
             const grid = document.getElementById('keyboardGrid');
             grid.innerHTML = '';
             grid.style.fontFamily = `'${currentFont}', serif`;
+            
+            // Update debug display
+            document.getElementById('currentFontDisplay').textContent = currentFont;
+            document.getElementById('charCountDisplay').textContent = `Characters: ${copticCharacters.length}`;
             
             copticCharacters.forEach(char => {
                 const btn = document.createElement('button');
