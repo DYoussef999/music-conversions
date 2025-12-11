@@ -164,8 +164,16 @@
             cursor: pointer;
             font-size: 18px;
             transition: all 0.2s;
-            line-height: 1;
+            line-height: 1.2;
             font-family: inherit !important;
+            min-height: 40px;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-all;
+            white-space: pre-wrap;
+            overflow: hidden;
         }
 
         .key-btn:hover {
@@ -687,6 +695,10 @@
                 const fontPath = `fonts/${fileName}`;
                 
                 const response = await fetch(fontPath);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch font: ${response.status}`);
+                }
+                
                 const buffer = await response.arrayBuffer();
                 const font = opentype.parse(buffer);
                 
@@ -694,24 +706,37 @@
                 const cmap = font.tables.cmap;
                 
                 if (cmap && cmap.glyphIndexMap) {
-                    Object.keys(cmap.glyphIndexMap).forEach(charCode => {
-                        const code = parseInt(charCode, 10);
-                        // Include printable characters (32-126) and higher Unicode ranges
-                        if (code >= 32 && code <= 126) {
-                            characters.push(String.fromCharCode(code));
-                        } else if (code >= 0x0370 && code <= 0x0400) { // Greek extended
-                            characters.push(String.fromCharCode(code));
-                        } else if (code >= 0x2000 && code <= 0x3000) { // General Punctuation and other blocks
-                            characters.push(String.fromCharCode(code));
+                    // Extract all characters from the font
+                    const charCodes = Object.keys(cmap.glyphIndexMap).map(code => parseInt(code, 10));
+                    
+                    // Sort the character codes
+                    charCodes.sort((a, b) => a - b);
+                    
+                    charCodes.forEach(code => {
+                        // Skip control characters and some problematic ranges
+                        if (code < 32 || code === 127) return; // Skip control characters
+                        
+                        try {
+                            const char = String.fromCharCode(code);
+                            // Skip invisible characters
+                            if (char.trim() === '' && code !== 32) return;
+                            characters.push(char);
+                        } catch (e) {
+                            // Skip characters that can't be converted
                         }
                     });
+                } else {
+                    console.warn(`No character map found in font ${fontName}`);
                 }
                 
                 // Cache the characters
                 fontCache[fontName] = characters;
+                console.log(`Extracted ${characters.length} characters from ${fontName}`);
                 return characters;
             } catch (error) {
                 console.error(`Error loading font ${fontName}:`, error);
+                // Return empty array - the UI will show "No characters found"
+                fontCache[fontName] = [];
                 return [];
             }
         }
@@ -746,11 +771,13 @@
             
             // Show loading message
             const loadingMsg = document.createElement('div');
-            loadingMsg.textContent = 'Loading characters...';
+            loadingMsg.id = 'loadingMsg';
+            loadingMsg.textContent = 'Loading characters from ' + currentFont + '...';
             loadingMsg.style.gridColumn = '1 / -1';
             loadingMsg.style.textAlign = 'center';
             loadingMsg.style.color = '#999';
             loadingMsg.style.padding = '20px';
+            loadingMsg.style.fontSize = '14px';
             grid.appendChild(loadingMsg);
             
             // Get characters from the current font
@@ -761,37 +788,48 @@
             
             if (characters.length === 0) {
                 const emptyMsg = document.createElement('div');
-                emptyMsg.textContent = 'No characters found in this font';
+                emptyMsg.textContent = 'No characters found in this font file. The font may not have a supported character map.';
                 emptyMsg.style.gridColumn = '1 / -1';
                 emptyMsg.style.textAlign = 'center';
                 emptyMsg.style.color = '#999';
                 emptyMsg.style.padding = '20px';
+                emptyMsg.style.fontSize = '14px';
                 grid.appendChild(emptyMsg);
                 return;
             }
             
-            characters.forEach(char => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'key-btn';
-                btn.textContent = char;
-                btn.style.fontFamily = `"${currentFont}", serif`;
-                btn.title = `U+${char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
-                
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const textarea = document.getElementById('hazzatInput');
-                    const start = textarea.selectionStart;
-                    const end = textarea.selectionEnd;
+            // Create character buttons
+            characters.forEach((char, index) => {
+                try {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'key-btn';
+                    btn.textContent = char;
+                    btn.style.fontFamily = `"${currentFont}", serif`;
                     
-                    currentText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
-                    textarea.value = currentText;
-                    textarea.selectionStart = textarea.selectionEnd = start + 1;
-                    textarea.focus();
-                });
-                
-                grid.appendChild(btn);
+                    const charCode = char.charCodeAt(0);
+                    btn.title = `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
+                    btn.setAttribute('data-char-code', charCode);
+                    
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const textarea = document.getElementById('hazzatInput');
+                        const start = textarea.selectionStart;
+                        const end = textarea.selectionEnd;
+                        
+                        currentText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
+                        textarea.value = currentText;
+                        textarea.selectionStart = textarea.selectionEnd = start + 1;
+                        textarea.focus();
+                    });
+                    
+                    grid.appendChild(btn);
+                } catch (e) {
+                    console.error(`Error creating button for character at index ${index}:`, e);
+                }
             });
+            
+            console.log(`Built keyboard with ${characters.length} characters for font ${currentFont}`);
         }
 
         function startVisualization() {
