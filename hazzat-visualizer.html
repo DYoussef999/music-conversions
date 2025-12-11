@@ -1,62 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Deployed: 2025-12-11 11:50 UTC -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <title>Hazzat Font Visualizer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap" rel="stylesheet">
     <style>
-        /* HCOC-Coptic-Fonts */
-        @font-face { font-family: 'Abraham'; src: url('fonts/AbrahamNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antoni10'; src: url('fonts/ANTONI10.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antoni12'; src: url('fonts/ANTONI12.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio0'; src: url('fonts/ANTONIO0.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio2'; src: url('fonts/ANTONIO2.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio4'; src: url('fonts/ANTONIO4.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio5'; src: url('fonts/ANTONIO5.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio6'; src: url('fonts/ANTONIO6.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Antonio7'; src: url('fonts/ANTONIO7.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'AntonioA'; src: url('fonts/ANTONIOA.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Athanasius'; src: url('fonts/Athanasius.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Avva Shenouda'; src: url('fonts/Avva_Shenouda.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Avva ShenoudaNormal'; src: url('fonts/Avva_ShenoudaNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Bishop Tadros'; src: url('fonts/Bishop Tadros Coptic.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Bishoy'; src: url('fonts/BishoyNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Cog'; src: url('fonts/Cog.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CogB'; src: url('fonts/COGB.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Copt'; src: url('fonts/copt.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Coptic'; src: url('fonts/Coptic.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Coptic1'; src: url('fonts/Coptic1.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Coptic II'; src: url('fonts/coptic_ii_nor.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'CopticNew'; src: url('fonts/coptonew.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Courier'; src: url('fonts/COURIERJ.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'CourierN'; src: url('fonts/COURIERN.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'CourierO'; src: url('fonts/COURIERO.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Avva Shenouda'; src: url('fonts/CS Avva Shenouda.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Copt'; src: url('fonts/CS Copt.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Coptic Manuscript'; src: url('fonts/CS Coptic Manuscript.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Copto Manuscript'; src: url('fonts/CS Copto Manuscript.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Koptos Manuscript'; src: url('fonts/CS Koptos Manuscript.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS New Athanasius'; src: url('fonts/CS New Athanasius.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'CS Pishoi'; src: url('fonts/CS Pishoi.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'FaithSym'; src: url('fonts/FAITHSYM.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Georges'; src: url('fonts/GeorgesNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Koptos'; src: url('fonts/KOPTOS.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Kyri'; src: url('fonts/Kyri000.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Kyrillos'; src: url('fonts/KyrillosNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Marcos'; src: url('fonts/MarcosNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Marina'; src: url('fonts/MarinaNormal.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Mark'; src: url('fonts/Mark.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'Mena'; src: url('fonts/Mena0001.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'NewAth'; src: url('fonts/NEWATH.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Nopher'; src: url('fonts/nopher_2.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Pishoi'; src: url('fonts/pishoi.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Pope Shenouda'; src: url('fonts/Pope Shenouda III Coptic.ttf?v=1') format('truetype'); }
-        @font-face { font-family: 'SpacMim'; src: url('fonts/SPACHMIM.TTF?v=1') format('truetype'); }
-        @font-face { font-family: 'Hazzat'; src: url('fonts/hazzat1_10a.ttf?v=2?v=1') format('truetype'); }
-
         * {
             margin: 0;
             padding: 0;
@@ -78,7 +27,7 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
         }
 
@@ -89,36 +38,8 @@
             font-size: 28px;
         }
 
-        .input-section {
+        .control-section {
             margin-bottom: 30px;
-        }
-
-        .font-select-section {
-            margin-bottom: 20px;
-        }
-
-        .font-select-section label {
-            display: block;
-            margin-bottom: 10px;
-            color: #555;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        #fontSelect {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: border-color 0.3s;
-            background: white;
-        }
-
-        #fontSelect:focus {
-            outline: none;
-            border-color: #667eea;
         }
 
         label {
@@ -129,34 +50,28 @@
             font-size: 14px;
         }
 
-        textarea {
+        select, textarea, button {
+            font-family: inherit;
+        }
+
+        select {
             width: 100%;
-            height: 120px;
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
-            font-family: var(--current-font, 'Hazzat'), serif;
-            resize: vertical;
-            transition: border-color 0.3s;
+            cursor: pointer;
+            background: white;
         }
 
-        textarea:focus {
+        select:focus {
             outline: none;
             border-color: #667eea;
         }
 
-        .keyboard-section {
+        .keyboard-label {
             margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .keyboard-section label {
-            display: block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: #555;
             font-weight: 600;
             font-size: 14px;
@@ -164,12 +79,17 @@
 
         .keyboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
             gap: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
 
         .key-btn {
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ccc;
             background: white;
             border-radius: 4px;
@@ -177,7 +97,10 @@
             font-size: 18px;
             transition: all 0.2s;
             line-height: 1;
-            font-family: inherit !important;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .key-btn:hover {
@@ -191,25 +114,26 @@
             transform: translateY(0);
         }
 
-        .detection-alert {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 6px;
-            padding: 10px 12px;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #856404;
-            display: none;
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
         }
 
-        .detection-alert.show {
-            display: block;
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         .button-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 30px;
         }
 
         button {
@@ -272,7 +196,6 @@
         }
 
         .character {
-            font-family: var(--current-font, 'Hazzat'), serif;
             font-size: 120px;
             color: #333;
             line-height: 1;
@@ -329,17 +252,6 @@
             font-family: monospace;
         }
 
-        .instructions {
-            background: #f0f4ff;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -362,6 +274,55 @@
                 flex-direction: column;
             }
         }
+
+        /* Define all fonts with correct paths from fonts folder */
+        @font-face { font-family: 'Abraham'; src: url('fonts/AbrahamNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Antoni10'; src: url('fonts/ANTONI10.TTF') format('truetype'); }
+        @font-face { font-family: 'Antoni12'; src: url('fonts/ANTONI12.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio0'; src: url('fonts/ANTONIO0.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio2'; src: url('fonts/ANTONIO2.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio4'; src: url('fonts/ANTONIO4.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio5'; src: url('fonts/ANTONIO5.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio6'; src: url('fonts/ANTONIO6.TTF') format('truetype'); }
+        @font-face { font-family: 'Antonio7'; src: url('fonts/ANTONIO7.TTF') format('truetype'); }
+        @font-face { font-family: 'AntonioA'; src: url('fonts/ANTONIOA.TTF') format('truetype'); }
+        @font-face { font-family: 'Athanasius'; src: url('fonts/Athanasius.ttf') format('truetype'); }
+        @font-face { font-family: 'Avva Shenouda'; src: url('fonts/Avva_Shenouda.ttf') format('truetype'); }
+        @font-face { font-family: 'Avva ShenoudaNormal'; src: url('fonts/Avva_ShenoudaNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Bishop Tadros'; src: url('fonts/Bishop Tadros Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'Bishoy'; src: url('fonts/BishoyNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Cog'; src: url('fonts/Cog.ttf') format('truetype'); }
+        @font-face { font-family: 'CogB'; src: url('fonts/COGB.TTF') format('truetype'); }
+        @font-face { font-family: 'Copt'; src: url('fonts/copt.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic'; src: url('fonts/Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic1'; src: url('fonts/Coptic1.ttf') format('truetype'); }
+        @font-face { font-family: 'Coptic II'; src: url('fonts/coptic_ii_nor.TTF') format('truetype'); }
+        @font-face { font-family: 'CopticNew'; src: url('fonts/coptonew.ttf') format('truetype'); }
+        @font-face { font-family: 'Courier'; src: url('fonts/COURIERJ.TTF') format('truetype'); }
+        @font-face { font-family: 'CourierN'; src: url('fonts/COURIERN.TTF') format('truetype'); }
+        @font-face { font-family: 'CourierO'; src: url('fonts/COURIERO.TTF') format('truetype'); }
+        @font-face { font-family: 'CS Avva Shenouda'; src: url('fonts/CS Avva Shenouda.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Copt'; src: url('fonts/CS Copt.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Coptic Manuscript'; src: url('fonts/CS Coptic Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Copto Manuscript'; src: url('fonts/CS Copto Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Koptos Manuscript'; src: url('fonts/CS Koptos Manuscript.ttf') format('truetype'); }
+        @font-face { font-family: 'CS New Athanasius'; src: url('fonts/CS New Athanasius.ttf') format('truetype'); }
+        @font-face { font-family: 'CS Pishoi'; src: url('fonts/CS Pishoi.ttf') format('truetype'); }
+        @font-face { font-family: 'FaithSym'; src: url('fonts/FAITHSYM.TTF') format('truetype'); }
+        @font-face { font-family: 'Georges'; src: url('fonts/GeorgesNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Hazzat'; src: url('fonts/hazzat1_10a.ttf') format('truetype'); }
+        @font-face { font-family: 'Koptos'; src: url('fonts/KOPTOS.TTF') format('truetype'); }
+        @font-face { font-family: 'Kyri'; src: url('fonts/Kyri000.ttf') format('truetype'); }
+        @font-face { font-family: 'Kyrillos'; src: url('fonts/KyrillosNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Marcos'; src: url('fonts/MarcosNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Marina'; src: url('fonts/MarinaNormal.TTF') format('truetype'); }
+        @font-face { font-family: 'Mark'; src: url('fonts/Mark.ttf') format('truetype'); }
+        @font-face { font-family: 'Mena'; src: url('fonts/Mena0001.ttf') format('truetype'); }
+        @font-face { font-family: 'NewAth'; src: url('fonts/NEWATH.TTF') format('truetype'); }
+        @font-face { font-family: 'Nopher'; src: url('fonts/nopher_2.TTF') format('truetype'); }
+        @font-face { font-family: 'Pishoi'; src: url('fonts/pishoi.TTF') format('truetype'); }
+        @font-face { font-family: 'Pope Shenouda'; src: url('fonts/Pope Shenouda III Coptic.ttf') format('truetype'); }
+        @font-face { font-family: 'SpacMim'; src: url('fonts/SPACHMIM.TTF') format('truetype'); }
     </style>
 </head>
 <body>
@@ -369,77 +330,18 @@
         <h1>🎵 Hazzat Font Visualizer</h1>
 
         <div class="input-section">
-            <div class="instructions">
-                💡 Select a Coptic font, paste your Coptic hymn text below, then click "Start" to view it character by character.
-            </div>
-
-            <div class="font-select-section">
-                <label for="fontSelect">Coptic Font:</label>
+            <div class="control-section">
+                <label for="fontSelect">Select Font:</label>
                 <select id="fontSelect" onchange="changeCopticFont()">
-                    <option value="Hazzat">Hazzat</option>
-                    <option value="Abraham">Abraham</option>
-                    <option value="Antoni10">Antoni10</option>
-                    <option value="Antoni12">Antoni12</option>
-                    <option value="Antonio0">Antonio0</option>
-                    <option value="Antonio2">Antonio2</option>
-                    <option value="Antonio4">Antonio4</option>
-                    <option value="Antonio5">Antonio5</option>
-                    <option value="Antonio6">Antonio6</option>
-                    <option value="Antonio7">Antonio7</option>
-                    <option value="AntonioA">AntonioA</option>
-                    <option value="Athanasius">Athanasius</option>
-                    <option value="Avva Shenouda">Avva Shenouda</option>
-                    <option value="Avva ShenoudaNormal">Avva ShenoudaNormal</option>
-                    <option value="Bishop Tadros">Bishop Tadros</option>
-                    <option value="Bishoy">Bishoy</option>
-                    <option value="Cog">Cog</option>
-                    <option value="CogB">CogB</option>
-                    <option value="Copt">Copt</option>
-                    <option value="Coptic">Coptic</option>
-                    <option value="Coptic1">Coptic1</option>
-                    <option value="Coptic II">Coptic II</option>
-                    <option value="CopticNew">CopticNew</option>
-                    <option value="Courier">Courier</option>
-                    <option value="CourierN">CourierN</option>
-                    <option value="CourierO">CourierO</option>
-                    <option value="CS Avva Shenouda">CS Avva Shenouda</option>
-                    <option value="CS Copt">CS Copt</option>
-                    <option value="CS Coptic Manuscript">CS Coptic Manuscript</option>
-                    <option value="CS Copto Manuscript">CS Copto Manuscript</option>
-                    <option value="CS Koptos Manuscript">CS Koptos Manuscript</option>
-                    <option value="CS New Athanasius">CS New Athanasius</option>
-                    <option value="CS Pishoi">CS Pishoi</option>
-                    <option value="FaithSym">FaithSym</option>
-                    <option value="Georges">Georges</option>
-                    <option value="Koptos">Koptos</option>
-                    <option value="Kyri">Kyri</option>
-                    <option value="Kyrillos">Kyrillos</option>
-                    <option value="Marcos">Marcos</option>
-                    <option value="Marina">Marina</option>
-                    <option value="Mark">Mark</option>
-                    <option value="Mena">Mena</option>
-                    <option value="NewAth">NewAth</option>
-                    <option value="Nopher">Nopher</option>
-                    <option value="Pishoi">Pishoi</option>
-                    <option value="Pope Shenouda">Pope Shenouda</option>
-                    <option value="SpacMim">SpacMim</option>
+                    <option value="">-- Select a font --</option>
                 </select>
             </div>
 
             <label for="hazzatInput">Coptic Text:</label>
-            <textarea 
-                id="hazzatInput" 
-                placeholder="Click keyboard buttons below or type to enter text..."
-            ></textarea>
+            <textarea id="hazzatInput" placeholder="Click keyboard buttons below or paste text..."></textarea>
 
-            <div class="keyboard-section">
-                <label>Coptic Character Keyboard:</label>
-                <div style="background: #e8f4f8; padding: 10px; border-radius: 4px; margin-bottom: 10px; font-size: 13px; border: 1px solid #b0dfe6;">
-                    <strong>Current Font:</strong> <span id="currentFontDisplay" style="color: #667eea; font-family: monospace; font-weight: bold;">Hazzat</span>
-                    <span id="charCountDisplay" style="margin-left: 15px; color: #666;">Characters: 0</span>
-                </div>
-                <div class="keyboard-grid" id="keyboardGrid"></div>
-            </div>
+            <div class="keyboard-label">Character Keyboard:</div>
+            <div class="keyboard-grid" id="keyboardGrid"></div>
 
             <div class="button-group">
                 <button class="btn-start" onclick="startVisualization()">Start</button>
@@ -466,120 +368,105 @@
                 <button class="btn-nav" id="prevBtn" onclick="previousCharacter()">← Previous</button>
                 <button class="btn-nav" id="nextBtn" onclick="nextCharacter()">Next →</button>
             </div>
-
-            <div style="margin-top: 15px; font-size: 12px; color: #999;">
-                Click on the character box or press Next/Previous to navigate
-            </div>
         </div>
     </div>
 
     <script>
-        // Font list - ONLY fonts that exist in the /fonts folder
-        const copticFonts = [
-            'Abraham', 'Antoni10', 'Antoni12', 'Antonio0', 'Antonio2', 'Antonio4', 'Antonio5', 'Antonio6', 'Antonio7',
-            'AntonioA', 'Athanasius', 'Avva Shenouda', 'Avva ShenoudaNormal', 'Bishop Tadros', 'Bishoy', 'Cog', 'CogB',
-            'Copt', 'Coptic', 'Coptic1', 'Coptic II', 'CopticNew', 'Courier', 'CourierN', 'CourierO', 'CS Avva Shenouda',
-            'CS Copt', 'CS Coptic Manuscript', 'CS Copto Manuscript', 'CS Koptos Manuscript', 'CS New Athanasius', 'CS Pishoi',
-            'FaithSym', 'Georges', 'Koptos', 'Kyri', 'Kyrillos', 'Marcos', 'Marina', 'Mark', 'Mena', 'NewAth', 'Nopher',
-            'Pishoi', 'Pope Shenouda', 'SpacMim', 'Hazzat'
-        ];
+        // Get all font files from fonts folder
+        const fontFiles = {
+            'Abraham': 'AbrahamNormal.TTF',
+            'Antoni10': 'ANTONI10.TTF',
+            'Antoni12': 'ANTONI12.TTF',
+            'Antonio0': 'ANTONIO0.TTF',
+            'Antonio2': 'ANTONIO2.TTF',
+            'Antonio4': 'ANTONIO4.TTF',
+            'Antonio5': 'ANTONIO5.TTF',
+            'Antonio6': 'ANTONIO6.TTF',
+            'Antonio7': 'ANTONIO7.TTF',
+            'AntonioA': 'ANTONIOA.TTF',
+            'Athanasius': 'Athanasius.ttf',
+            'Avva Shenouda': 'Avva_Shenouda.ttf',
+            'Avva ShenoudaNormal': 'Avva_ShenoudaNormal.TTF',
+            'Bishop Tadros': 'Bishop Tadros Coptic.ttf',
+            'Bishoy': 'BishoyNormal.TTF',
+            'Cog': 'Cog.ttf',
+            'CogB': 'COGB.TTF',
+            'Copt': 'copt.ttf',
+            'Coptic': 'Coptic.ttf',
+            'Coptic1': 'Coptic1.ttf',
+            'Coptic II': 'coptic_ii_nor.TTF',
+            'CopticNew': 'coptonew.ttf',
+            'Courier': 'COURIERJ.TTF',
+            'CourierN': 'COURIERN.TTF',
+            'CourierO': 'COURIERO.TTF',
+            'CS Avva Shenouda': 'CS Avva Shenouda.ttf',
+            'CS Copt': 'CS Copt.ttf',
+            'CS Coptic Manuscript': 'CS Coptic Manuscript.ttf',
+            'CS Copto Manuscript': 'CS Copto Manuscript.ttf',
+            'CS Koptos Manuscript': 'CS Koptos Manuscript.ttf',
+            'CS New Athanasius': 'CS New Athanasius.ttf',
+            'CS Pishoi': 'CS Pishoi.ttf',
+            'FaithSym': 'FAITHSYM.TTF',
+            'Georges': 'GeorgesNormal.TTF',
+            'Hazzat': 'hazzat1_10a.ttf',
+            'Koptos': 'KOPTOS.TTF',
+            'Kyri': 'Kyri000.ttf',
+            'Kyrillos': 'KyrillosNormal.TTF',
+            'Marcos': 'MarcosNormal.TTF',
+            'Marina': 'MarinaNormal.TTF',
+            'Mark': 'Mark.ttf',
+            'Mena': 'Mena0001.ttf',
+            'NewAth': 'NEWATH.TTF',
+            'Nopher': 'nopher_2.TTF',
+            'Pishoi': 'pishoi.TTF',
+            'Pope Shenouda': 'Pope Shenouda III Coptic.ttf',
+            'SpacMim': 'SPACHMIM.TTF'
+        };
 
-        // Extended character set including Coptic Unicode and common musical notation
-        // Covers the full Coptic block (U+2C80 - U+2CF3) plus additional characters
-        function getAllAvailableCharacters() {
-            const chars = [];
-            
-            // Standard Coptic Unicode block (U+2C80 - U+2CF3)
-            for (let i = 0x2C80; i <= 0x2CF3; i++) {
-                chars.push(String.fromCharCode(i));
-            }
-            
-            // Common additional Coptic and liturgical characters
-            // Ancient Greek letters sometimes used
-            const additionalChars = [
-                '\u0391', '\u0392', '\u0393', '\u0394', '\u0395', '\u0396', '\u0397', '\u0398', '\u0399', '\u039A', // Α-Κ
-                '\u039B', '\u039C', '\u039D', '\u039E', '\u039F', '\u03A0', '\u03A1', '\u03A3', '\u03A4', '\u03A5', // Λ-Υ
-                '\u03A6', '\u03A7', '\u03A8', '\u03A9', // Φ-Ω
-                '\u03B1', '\u03B2', '\u03B3', '\u03B4', '\u03B5', '\u03B6', '\u03B7', '\u03B8', '\u03B9', '\u03BA', // α-κ
-                '\u03BB', '\u03BC', '\u03BD', '\u03BE', '\u03BF', '\u03C0', '\u03C1', '\u03C3', '\u03C4', '\u03C5', // λ-υ
-                '\u03C6', '\u03C7', '\u03C8', '\u03C9', // φ-ω
-                // Common symbols and marks
-                '\u0300', '\u0301', '\u0302', '\u0303', '\u0304', '\u0305', '\u0306', '\u0307', '\u0308', '\u0309',
-                '\u030A', '\u030B', '\u030C', // diacritical marks
-                // Spaces and punctuation
-                '\u0020', '\u00A0', '\u200B', '\u2009', '\u200A', // various spaces
-                '.', ',', ':', ';', '!', '?', '-', '–', '—',
-                '(', ')', '[', ']', '{', '}',
-                // Numbers
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                // Roman numerals and common symbols
-                'I', 'V', 'X', 'L', 'C', 'D', 'M'
-            ];
-            
-            additionalChars.forEach(char => {
-                if (!chars.includes(char)) {
-                    chars.push(char);
-                }
-            });
-            
-            return chars;
+        // Coptic Unicode characters (U+2C80 - U+2CF3)
+        const copticCharacters = [];
+        for (let i = 0x2C80; i <= 0x2CF3; i++) {
+            copticCharacters.push(String.fromCharCode(i));
         }
-        
-        // Store all available characters
-        const allCopticCharacters = getAllAvailableCharacters();
-        
-        let copticCharacters = allCopticCharacters;
 
+        let currentFont = '';
         let currentText = '';
         let currentCharIndex = 0;
-        let currentFont = 'Hazzat';
 
-        // Initialize font selector and keyboard
+        // Initialize dropdown
         window.addEventListener('DOMContentLoaded', () => {
-            console.log('DOMContentLoaded fired');
-            console.log('copticCharacters length:', copticCharacters.length);
-            updateFontVariable();
-            buildKeyboard();
-            console.log('Keyboard built');
+            const fontSelect = document.getElementById('fontSelect');
+            Object.keys(fontFiles).sort().forEach(fontName => {
+                const option = document.createElement('option');
+                option.value = fontName;
+                option.textContent = fontName;
+                fontSelect.appendChild(option);
+            });
+            
+            // Set Hazzat as default
+            fontSelect.value = 'Hazzat';
+            changeCopticFont();
         });
-
-        function updateFontVariable() {
-            document.documentElement.style.setProperty('--current-font', `'${currentFont}'`);
-            const textarea = document.getElementById('hazzatInput');
-            textarea.style.fontFamily = `'${currentFont}', serif`;
-        }
 
         function changeCopticFont() {
             currentFont = document.getElementById('fontSelect').value;
-            updateFontVariable();
-            buildKeyboard();
             
-            // Update font in textarea
+            if (!currentFont || !fontFiles[currentFont]) {
+                console.error('Invalid font selected');
+                return;
+            }
+
+            // Update textarea font
             const textarea = document.getElementById('hazzatInput');
             textarea.style.fontFamily = `'${currentFont}', serif`;
-            
-            // Update font in character display if visualization is active
-            const charDisplay = document.getElementById('characterDisplay');
-            if (charDisplay) {
-                charDisplay.style.fontFamily = `'${currentFont}', serif`;
-            }
-            
-            // Redisplay current character if in visualization mode
-            if (currentText.length > 0 && document.getElementById('displaySection').classList.contains('active')) {
-                displayCharacter();
-            }
+
+            // Rebuild keyboard
+            buildKeyboard();
         }
 
         function buildKeyboard() {
-            console.log('buildKeyboard called with font:', currentFont);
             const grid = document.getElementById('keyboardGrid');
             grid.innerHTML = '';
-            grid.style.fontFamily = `'${currentFont}', serif`;
-            
-            // Update debug display
-            document.getElementById('currentFontDisplay').textContent = currentFont;
-            document.getElementById('charCountDisplay').textContent = `Characters: ${copticCharacters.length}`;
-            console.log('Updated display - chars:', copticCharacters.length);
             
             copticCharacters.forEach(char => {
                 const btn = document.createElement('button');
@@ -595,15 +482,14 @@
                     const start = textarea.selectionStart;
                     const end = textarea.selectionEnd;
                     
-                    currentText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
-                    textarea.value = currentText;
+                    const newText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
+                    textarea.value = newText;
                     textarea.selectionStart = textarea.selectionEnd = start + 1;
                     textarea.focus();
                 });
                 
                 grid.appendChild(btn);
             });
-            console.log('Finished building keyboard with', copticCharacters.length, 'buttons');
         }
 
         function startVisualization() {
