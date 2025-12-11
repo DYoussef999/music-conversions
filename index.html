@@ -572,9 +572,6 @@
 
             <div class="display-section" id="displaySection">
                 <div class="info">
-                    <span class="progress">
-                        Character <span id="currentIndex">1</span> of <span id="totalChars">0</span>
-                    </span>
                     <button class="btn-nav" onclick="resetVisualization()">← Back</button>
                 </div>
 
@@ -593,13 +590,16 @@
                     </div>
                 </div>
 
+                <div id="hazzatDisplaySection" style="padding: 20px; background: #f9f9f9; margin-top: 20px; border: 2px solid #ddd; border-radius: 8px; min-height: 150px; display: none;">
+                </div>
+
                 <div class="controls">
                     <button class="btn-nav" id="prevBtn" onclick="previousCharacter()">← Previous</button>
                     <button class="btn-nav" id="nextBtn" onclick="nextCharacter()">Next →</button>
                 </div>
 
-                <div style="margin-top: 15px; font-size: 12px; color: #999;">
-                    Click on the character box or press Next/Previous to navigate
+                <div style="margin-top: 15px; font-size: 12px; color: #999; text-align: center;">
+                    Press Previous/Next to navigate through text in order
                 </div>
             </div>
         </div>
@@ -891,12 +891,10 @@
                     btn.addEventListener('click', (e) => {
                         e.preventDefault();
                         const textarea = document.getElementById('hazzatInput');
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
                         
-                        currentText = textarea.value.substring(0, start) + char + textarea.value.substring(end);
-                        textarea.value = currentText;
-                        textarea.selectionStart = textarea.selectionEnd = start + 1;
+                        // Always append to end of text
+                        textarea.value += char;
+                        textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
                         textarea.focus();
                     });
                     
@@ -1064,29 +1062,36 @@
             return svg;
         }
 
+        let hazzatSymbolStorage = []; // Store symbol data indexed by diamond position
+
         function completeHazzatSymbol() {
             if (currentHazzatSymbol.length === 0) return;
             
-            // Create a unique character representation for the symbol
-            const symbolData = JSON.stringify(currentHazzatSymbol);
-            const symbolChar = String.fromCharCode(0xE000 + Math.random() * 128); // Use private use unicode area
+            // Store the symbol data
+            hazzatSymbolStorage.push({
+                elements: [...currentHazzatSymbol]
+            });
             
             // Add the SVG preview to the textarea
             const textarea = document.getElementById('hazzatInput');
-            const svg = renderHazzatSymbol(currentHazzatSymbol);
+            
+            // Save cursor position before modifying
+            const cursorPos = textarea.selectionStart;
             
             // Insert a marker/placeholder for the symbol
             textarea.value += '◆'; // Use diamond as a placeholder
+            
+            // Restore cursor to end of new text
+            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
             
             currentHazzatSymbol = [];
             updateHazzatPreview();
             updateCompleteHazzatButton();
         }
 
-        // Data structure for visualization: array of {copticChar, hazzatSymbols: []}
-        let visualizationData = [];
-        let currentCopticIndex = 0;
-        let currentHazzatIndex = 0;
+        // Linear array of steps: each step is either {type: 'coptic', char: 'α'} or {type: 'hazzat', index: 2}
+        let visualizationSteps = [];
+        let currentStepIndex = 0;
 
         function startVisualization() {
             const input = document.getElementById('hazzatInput').value.trim();
@@ -1096,205 +1101,182 @@
                 return;
             }
 
-            // Parse text into groups: each Coptic char with its following Hazzat symbols
-            visualizationData = parseTextIntoGroups(input);
+            // Parse text into linear steps
+            visualizationSteps = parseTextIntoSteps(input);
             
-            if (visualizationData.length === 0) {
-                alert('No Coptic characters found!');
+            if (visualizationSteps.length === 0) {
+                alert('No characters found!');
                 return;
             }
 
-            currentCopticIndex = 0;
-            currentHazzatIndex = 0;
+            currentStepIndex = 0;
             
-            const tab = document.getElementById('hazzat-tab');
+            // Hide input section, show display section
+            const inputSection = document.querySelector('.font-select-section');
+            if (inputSection) inputSection.style.display = 'none';
+            
+            const textareaLabel = Array.from(document.querySelectorAll('label')).find(l => l.textContent.includes('Coptic Text'));
+            if (textareaLabel) textareaLabel.style.display = 'none';
+            
+            const textarea = document.getElementById('hazzatInput');
+            if (textarea) textarea.style.display = 'none';
+            
+            const symbolMakerSection = document.querySelector('[style*="margin-top: 30px"]');
+            if (symbolMakerSection) symbolMakerSection.style.display = 'none';
+            
+            const buttonGroup = document.querySelector('.button-group');
+            if (buttonGroup) buttonGroup.style.display = 'none';
+            
+            const keyboardSection = document.querySelector('.keyboard-section');
+            if (keyboardSection) keyboardSection.style.display = 'none';
+            
+            // Show display section
             const displaySection = document.getElementById('displaySection');
-            
-            Array.from(tab.children).forEach(child => {
-                if (child !== displaySection) child.style.display = 'none';
-            });
-            
-            displaySection.classList.add('active');
+            displaySection.style.display = 'block';
             
             displayCharacter();
             updateNavigationButtons();
         }
 
-        function parseTextIntoGroups(text) {
-            const groups = [];
-            let currentGroup = null;
+        function parseTextIntoSteps(text) {
+            const steps = [];
             
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
                 if (char === '◆') {
-                    // This is a Hazzat placeholder - add to current group
-                    if (currentGroup) {
-                        currentGroup.hazzatSymbols.push('◆');
-                    } else {
-                        // If no current group, create one for this orphaned Hazzat
-                        currentGroup = {
-                            copticChar: '',
-                            hazzatSymbols: ['◆']
-                        };
-                    }
+                    // Hazzat symbol
+                    steps.push({ type: 'hazzat', index: i });
                 } else if (char.trim()) {
-                    // This is a regular character
-                    if (currentGroup && currentGroup.copticChar) {
-                        // Save previous group and start new one
-                        groups.push(currentGroup);
-                        currentGroup = {
-                            copticChar: char,
-                            hazzatSymbols: []
-                        };
-                    } else {
-                        // Start or continue current group
-                        currentGroup = {
-                            copticChar: char,
-                            hazzatSymbols: currentGroup ? currentGroup.hazzatSymbols : []
-                        };
-                    }
+                    // Regular character
+                    steps.push({ type: 'coptic', char: char, index: i });
                 }
             }
             
-            // Don't forget the last group
-            if (currentGroup && currentGroup.copticChar) {
-                groups.push(currentGroup);
-            }
-            
-            return groups;
+            return steps;
         }
 
         function displayCharacter() {
-            if (visualizationData.length === 0) return;
+            console.log('displayCharacter called, currentStepIndex:', currentStepIndex, 'visualizationSteps:', visualizationSteps);
+            
+            if (currentStepIndex < 0 || currentStepIndex >= visualizationSteps.length) {
+                console.log('Index out of bounds or no steps');
+                return;
+            }
 
-            const currentGroup = visualizationData[currentCopticIndex];
-            const copticChar = currentGroup.copticChar;
-            const charCode = copticChar.charCodeAt(0);
+            const step = visualizationSteps[currentStepIndex];
+            console.log('Current step:', step);
             
-            // Display Coptic character at top
             const charDisplay = document.getElementById('characterDisplay');
-            charDisplay.textContent = copticChar;
-            charDisplay.style.fontFamily = `"${currentFont}", serif`;
-            
-            // Display previous Coptic character
+            const charCode = document.getElementById('characterCode');
             const prevCharDisplay = document.getElementById('prevCharacterDisplay');
-            if (prevCharDisplay) {
-                if (currentCopticIndex > 0) {
-                    prevCharDisplay.textContent = visualizationData[currentCopticIndex - 1].copticChar;
-                    prevCharDisplay.style.fontFamily = `"${currentFont}", serif`;
-                } else {
-                    prevCharDisplay.textContent = '';
-                }
-            }
-            
-            // Display next Coptic character
             const nextCharDisplay = document.getElementById('nextCharacterDisplay');
-            if (nextCharDisplay) {
-                if (currentCopticIndex < visualizationData.length - 1) {
-                    nextCharDisplay.textContent = visualizationData[currentCopticIndex + 1].copticChar;
-                    nextCharDisplay.style.fontFamily = `"${currentFont}", serif`;
+            const hazzatSection = document.getElementById('hazzatDisplaySection');
+            
+            if (!charDisplay || !charCode || !prevCharDisplay || !nextCharDisplay || !hazzatSection) {
+                console.error('Display elements not found');
+                return;
+            }
+            
+            // Show previous character (if exists and is coptic)
+            let prevStep = null;
+            for (let i = currentStepIndex - 1; i >= 0; i--) {
+                if (visualizationSteps[i].type === 'coptic') {
+                    prevStep = visualizationSteps[i];
+                    break;
+                }
+            }
+            prevCharDisplay.textContent = prevStep ? prevStep.char : '';
+            
+            // Show next character (if exists and is coptic)
+            let nextStep = null;
+            for (let i = currentStepIndex + 1; i < visualizationSteps.length; i++) {
+                if (visualizationSteps[i].type === 'coptic') {
+                    nextStep = visualizationSteps[i];
+                    break;
+                }
+            }
+            nextCharDisplay.textContent = nextStep ? nextStep.char : '';
+            
+            // Show current character/symbol
+            if (step.type === 'coptic') {
+                charDisplay.textContent = step.char;
+                charCode.textContent = `U+${step.char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+                hazzatSection.style.display = 'none';
+            } else if (step.type === 'hazzat') {
+                // Count which hazzat symbol this is (0-indexed)
+                const symbolIndex = visualizationSteps.filter((s, i) => i < currentStepIndex && s.type === 'hazzat').length;
+                
+                if (hazzatSymbolStorage[symbolIndex]) {
+                    charDisplay.textContent = '◆';
+                    charCode.textContent = '';
+                    hazzatSection.style.display = 'block';
+                    const svg = renderHazzatSymbol(hazzatSymbolStorage[symbolIndex].elements);
+                    hazzatSection.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            ${svg}
+                        </div>
+                        <div style="text-align: center; font-size: 14px; color: #666;">
+                            Hazzat Symbol ${symbolIndex + 1} of ${hazzatSymbolStorage.length}
+                        </div>
+                    `;
                 } else {
-                    nextCharDisplay.textContent = '';
+                    charDisplay.textContent = '';
+                    hazzatSection.style.display = 'none';
                 }
             }
             
-            document.getElementById('characterCode').textContent = 
-                `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
-            
-            // Display Hazzat symbol below in a separate section
-            let hazzatSection = document.getElementById('hazzatDisplaySection');
-            if (!hazzatSection) {
-                // Create the Hazzat display section if it doesn't exist
-                const controlsDiv = document.querySelector('.controls');
-                hazzatSection = document.createElement('div');
-                hazzatSection.id = 'hazzatDisplaySection';
-                hazzatSection.style.cssText = 'margin-top: 40px; padding: 20px; background: #f9f9f9; border: 2px solid #ddd; border-radius: 8px; text-align: center;';
-                controlsDiv.parentNode.insertBefore(hazzatSection, controlsDiv);
-            }
-            
-            if (currentGroup.hazzatSymbols.length > 0) {
-                hazzatSection.style.display = 'block';
-                hazzatSection.innerHTML = `
-                    <div style="font-size: 12px; color: #666; margin-bottom: 15px;">
-                        Hazzat Symbol ${currentHazzatIndex + 1} of ${currentGroup.hazzatSymbols.length}
-                    </div>
-                    <div style="display: flex; justify-content: center; align-items: center; min-height: 100px;">
-                        <svg width="140" height="100" viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg" style="border: 1px solid #ddd; border-radius: 4px; background: white;">
-                            <rect width="140" height="100" fill="white" stroke="none"/>
-                            <g>
-                                <line x1="30" y1="50" x2="110" y2="50" stroke="#999" stroke-width="1" stroke-dasharray="2,2"/>
-                                <text x="70" y="60" text-anchor="middle" font-size="12" fill="#999">Hazzat ${currentHazzatIndex + 1}</text>
-                            </g>
-                        </svg>
-                    </div>
-                `;
-            } else {
-                hazzatSection.style.display = 'none';
-            }
-            
-            const totalSteps = visualizationData.reduce((sum, group) => sum + Math.max(1, group.hazzatSymbols.length), 0);
-            const currentStep = visualizationData.slice(0, currentCopticIndex).reduce((sum, group) => sum + Math.max(1, group.hazzatSymbols.length), 0) + (currentHazzatIndex + 1);
-            
-            document.getElementById('currentIndex').textContent = currentStep;
-            document.getElementById('totalChars').textContent = totalSteps;
+            updateNavigationButtons();
         }
 
         function nextCharacter() {
-            const currentGroup = visualizationData[currentCopticIndex];
-            
-            if (currentHazzatIndex < currentGroup.hazzatSymbols.length - 1) {
-                // Move to next Hazzat in current group
-                currentHazzatIndex++;
-            } else if (currentCopticIndex < visualizationData.length - 1) {
-                // Move to next Coptic group
-                currentCopticIndex++;
-                currentHazzatIndex = 0;
+            if (currentStepIndex < visualizationSteps.length - 1) {
+                currentStepIndex++;
+                displayCharacter();
             }
-            
-            displayCharacter();
-            updateNavigationButtons();
         }
 
         function previousCharacter() {
-            if (currentHazzatIndex > 0) {
-                // Move to previous Hazzat in current group
-                currentHazzatIndex--;
-            } else if (currentCopticIndex > 0) {
-                // Move to previous Coptic group
-                currentCopticIndex--;
-                const prevGroup = visualizationData[currentCopticIndex];
-                currentHazzatIndex = Math.max(0, prevGroup.hazzatSymbols.length - 1);
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                displayCharacter();
             }
-            
-            displayCharacter();
-            updateNavigationButtons();
         }
 
         function updateNavigationButtons() {
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-
-            prevBtn.disabled = currentCopticIndex === 0 && currentHazzatIndex === 0;
             
-            const isLastCoptic = currentCopticIndex === visualizationData.length - 1;
-            const isLastHazzat = currentHazzatIndex === visualizationData[currentCopticIndex].hazzatSymbols.length - 1;
-            nextBtn.disabled = isLastCoptic && isLastHazzat;
+            prevBtn.disabled = currentStepIndex === 0;
+            nextBtn.disabled = currentStepIndex === visualizationSteps.length - 1;
         }
 
         function resetVisualization() {
-            visualizationData = [];
-            currentCopticIndex = 0;
-            currentHazzatIndex = 0;
+            visualizationSteps = [];
+            currentStepIndex = 0;
+            hazzatSymbolStorage = []; // Clear symbol storage
             
-            document.getElementById('hazzatInput').value = '';
-            const tab = document.getElementById('hazzat-tab');
+            // Show input section again
+            const inputSection = document.querySelector('.font-select-section');
+            if (inputSection) inputSection.style.display = 'block';
+            
+            const textareaLabel = Array.from(document.querySelectorAll('label')).find(l => l.textContent.includes('Coptic Text'));
+            if (textareaLabel) textareaLabel.style.display = 'block';
+            
+            const textarea = document.getElementById('hazzatInput');
+            if (textarea) textarea.style.display = 'block';
+            
+            const symbolMakerSection = document.querySelector('[style*="margin-top: 30px"]');
+            if (symbolMakerSection) symbolMakerSection.style.display = 'block';
+            
+            const buttonGroup = document.querySelector('.button-group');
+            if (buttonGroup) buttonGroup.style.display = 'flex';
+            
+            const keyboardSection = document.querySelector('.keyboard-section');
+            if (keyboardSection) keyboardSection.style.display = 'block';
+            
+            // Hide display section
             const displaySection = document.getElementById('displaySection');
-            
-            Array.from(tab.children).forEach(child => {
-                if (child !== displaySection) child.style.display = 'block';
-            });
-            
-            displaySection.classList.remove('active');
+            displaySection.style.display = 'none';
         }
 
         document.addEventListener('keydown', (e) => {
