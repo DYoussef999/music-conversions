@@ -932,37 +932,50 @@
                 return;
             }
             
+            // Helper function to create a button
+            const createButton = (text, isSpecial = false) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'key-btn';
+                btn.textContent = text;
+                if (!isSpecial) {
+                    btn.style.fontFamily = `"${currentFont}", serif`;
+                }
+                
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const textarea = document.getElementById('hazzatInput');
+                    
+                    // Get current cursor position
+                    const cursorPos = textarea.selectionStart;
+                    const beforeCursor = textarea.value.substring(0, cursorPos);
+                    const afterCursor = textarea.value.substring(cursorPos);
+                    
+                    // Insert text at cursor position
+                    textarea.value = beforeCursor + text + afterCursor;
+                    
+                    // Move cursor to after the inserted text
+                    const newCursorPos = cursorPos + text.length;
+                    textarea.selectionStart = textarea.selectionEnd = newCursorPos;
+                    lastCursorPosition = newCursorPos;
+                    textarea.focus();
+                });
+                
+                return btn;
+            };
+            
+            // Add bracket buttons at the beginning
+            grid.appendChild(createButton('[', true));
+            grid.appendChild(createButton(']', true));
+            
             // Create character buttons
             characters.forEach((char, index) => {
                 try {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'key-btn';
-                    btn.textContent = char;
-                    btn.style.fontFamily = `"${currentFont}", serif`;
+                    const btn = createButton(char);
                     
                     const charCode = char.charCodeAt(0);
                     btn.title = `U+${charCode.toString(16).toUpperCase().padStart(4, '0')}`;
                     btn.setAttribute('data-char-code', charCode);
-                    
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const textarea = document.getElementById('hazzatInput');
-                        
-                        // Get current cursor position
-                        const cursorPos = textarea.selectionStart;
-                        const beforeCursor = textarea.value.substring(0, cursorPos);
-                        const afterCursor = textarea.value.substring(cursorPos);
-                        
-                        // Insert character at cursor position
-                        textarea.value = beforeCursor + char + afterCursor;
-                        
-                        // Move cursor to after the inserted character
-                        const newCursorPos = cursorPos + 1;
-                        textarea.selectionStart = textarea.selectionEnd = newCursorPos;
-                        lastCursorPosition = newCursorPos;
-                        textarea.focus();
-                    });
                     
                     grid.appendChild(btn);
                 } catch (e) {
