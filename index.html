@@ -1337,78 +1337,51 @@
             
             // Only animate Coptic character if the index actually changed
             if (currentCopticIndex !== previousCopticIndex) {
-                // Apply START position classes immediately (before content update)
-                requestAnimationFrame(() => {
-                    wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
+                // Apply animation classes based on direction
+                if (lastNavigationDirection === 'next') {
+                    // Slide current left, next to center
+                    if (wrappers[0]) wrappers[0].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                    if (wrappers[1]) wrappers[1].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                    if (wrappers[2]) wrappers[2].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                     
-                    if (lastNavigationDirection === 'next') {
-                        // START positions for NEXT: wrapper[0] is old-current (center), wrapper[1] is old-right (right), wrapper[2] stays right
-                        if (wrappers[0]) wrappers[0].classList.add('to-current');
-                        if (wrappers[1]) wrappers[1].classList.add('to-right-adj');
-                        if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
-                    } else {
-                        // START positions for PREVIOUS: wrapper[0] stays left, wrapper[1] is old-current (center), wrapper[2] is old-left (left)
-                        if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
-                        if (wrappers[1]) wrappers[1].classList.add('to-current');
-                        if (wrappers[2]) wrappers[2].classList.add('to-left-adj');
-                    }
+                    if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+                    if (wrappers[1]) wrappers[1].classList.add('to-current');
+                    if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
+                } else {
+                    // Slide current right, prev to center
+                    if (wrappers[0]) wrappers[0].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                    if (wrappers[1]) wrappers[1].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                    if (wrappers[2]) wrappers[2].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                     
-                    // Now update content while elements are in START positions
-                    if (currentCopticIndex > 0) {
-                        prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
-                    } else {
-                        prevCharDisplay.textContent = '';
-                    }
-                    charDisplay.textContent = copticChar;
-                    if (currentCopticIndex < visualizationSteps.length - 1) {
-                        nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
-                    } else {
-                        nextCharDisplay.textContent = '';
-                    }
-                    charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
-                    
-                    // In next frame, animate to END positions
-                    requestAnimationFrame(() => {
-                        wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
-                        
-                        if (lastNavigationDirection === 'next') {
-                            // END positions for NEXT: left fades, center-was-right becomes current, right stays
-                            if (wrappers[0]) wrappers[0].classList.add('fade-out-left');
-                            if (wrappers[1]) wrappers[1].classList.add('to-current');
-                            if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
-                        } else {
-                            // END positions for PREVIOUS: left stays, center becomes right-adj, right fades
-                            if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
-                            if (wrappers[1]) wrappers[1].classList.add('fade-out-right');
-                            if (wrappers[2]) wrappers[2].classList.add('to-current');
-                        }
-                        
-                        // After animation completes, reset to center state
-                        setTimeout(() => {
-                            wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
-                            if (wrappers[1]) wrappers[1].classList.add('to-current');
-                        }, 500);
-                    });
-                });
+                    if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+                    if (wrappers[1]) wrappers[1].classList.add('to-current');
+                    if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
+                }
                 
                 previousCopticIndex = currentCopticIndex;
             } else {
-                // No animation needed, but ensure content is updated and centered
-                if (currentCopticIndex > 0) {
-                    prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
-                } else {
-                    prevCharDisplay.textContent = '';
-                }
-                charDisplay.textContent = copticChar;
-                if (currentCopticIndex < visualizationSteps.length - 1) {
-                    nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
-                } else {
-                    nextCharDisplay.textContent = '';
-                }
-                charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+                // No animation, just ensure correct state
+                if (wrappers[0]) wrappers[0].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                if (wrappers[1]) wrappers[1].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                if (wrappers[2]) wrappers[2].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                 
-                wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
+                if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
                 if (wrappers[1]) wrappers[1].classList.add('to-current');
+                if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
+            }
+            
+            // Update content for all three wrappers
+            if (currentCopticIndex > 0) {
+                prevCharDisplay.textContent = visualizationSteps[currentCopticIndex - 1].copticChar;
+            } else {
+                prevCharDisplay.textContent = '';
+            }
+            charDisplay.textContent = copticChar;
+            charCode.textContent = `U+${copticChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+            if (currentCopticIndex < visualizationSteps.length - 1) {
+                nextCharDisplay.textContent = visualizationSteps[currentCopticIndex + 1].copticChar;
+            } else {
+                nextCharDisplay.textContent = '';
             }
             
             // Display bottom section with Hazzat symbols
@@ -1450,79 +1423,49 @@
                         }
                     }
                     
-                    // Only animate Hazzat if the index actually changed
+                    // Build HTML with all three wrappers
+                    hazzatSection.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
+                            <div class="hazzat-wrapper to-left-adj">
+                                ${prevHazzatSvg}
+                            </div>
+                            <div class="hazzat-wrapper to-current">
+                                ${svg}
+                            </div>
+                            <div class="hazzat-wrapper to-right-adj">
+                                ${nextHazzatSvg}
+                            </div>
+                        </div>
+                        <div style="text-align: center; font-size: 14px; color: #666;">
+                            Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
+                        </div>
+                    `;
+                    
+                    // Animate if index changed
                     if (currentHazzatIndex !== previousHazzatIndex) {
-                        // Apply START position classes (before content update)
                         requestAnimationFrame(() => {
-                            // Position elements at START
-                            hazzatSection.innerHTML = `
-                                <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-current' : 'to-left-adj'}">
-                                        ${prevHazzatSvg}
-                                    </div>
-                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-right-adj' : 'to-current'}">
-                                        ${svg}
-                                    </div>
-                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-right-adj' : 'to-left-adj'}">
-                                        ${nextHazzatSvg}
-                                    </div>
-                                </div>
-                                <div style="text-align: center; font-size: 14px; color: #666;">
-                                    Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
-                                </div>
-                            `;
+                            const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
                             
-                            // In next frame, animate to END positions
-                            requestAnimationFrame(() => {
-                                const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
+                            if (lastNavigationDirection === 'next') {
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                                 
-                                hazzatWrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-left-adj');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-right-adj');
+                            } else {
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                                 
-                                if (lastNavigationDirection === 'next') {
-                                    // END positions for NEXT: left fades, center becomes current, right stays
-                                    if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('fade-out-left');
-                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
-                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-right-adj');
-                                } else {
-                                    // END positions for PREVIOUS: left stays, center fades, right becomes current
-                                    if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-left-adj');
-                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('fade-out-right');
-                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-current');
-                                }
-                                
-                                // After animation completes, reset to center state
-                                setTimeout(() => {
-                                    hazzatWrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
-                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
-                                }, 500);
-                            });
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-left-adj');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-right-adj');
+                            }
                         });
                         
                         previousHazzatIndex = currentHazzatIndex;
-                    } else {
-                        // No animation, just update content and center
-                        hazzatSection.innerHTML = `
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                                <div class="hazzat-wrapper">
-                                    ${prevHazzatSvg}
-                                </div>
-                                <div class="hazzat-wrapper">
-                                    ${svg}
-                                </div>
-                                <div class="hazzat-wrapper">
-                                    ${nextHazzatSvg}
-                                </div>
-                            </div>
-                            <div style="text-align: center; font-size: 14px; color: #666;">
-                                Hazzat Symbol ${currentHazzatIndex + 1} of ${hazzatSymbols.length}
-                            </div>
-                        `;
-                        
-                        requestAnimationFrame(() => {
-                            const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
-                            hazzatWrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
-                            if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
-                        });
                     }
                 } else {
                     // Fallback if symbol data not found
