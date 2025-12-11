@@ -534,8 +534,11 @@
 
         // Initialize font selector and keyboard
         window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded fired');
+            console.log('copticCharacters length:', copticCharacters.length);
             updateFontVariable();
             buildKeyboard();
+            console.log('Keyboard built');
         });
 
         function updateFontVariable() {
@@ -566,6 +569,7 @@
         }
 
         function buildKeyboard() {
+            console.log('buildKeyboard called with font:', currentFont);
             const grid = document.getElementById('keyboardGrid');
             grid.innerHTML = '';
             grid.style.fontFamily = `'${currentFont}', serif`;
@@ -573,6 +577,7 @@
             // Update debug display
             document.getElementById('currentFontDisplay').textContent = currentFont;
             document.getElementById('charCountDisplay').textContent = `Characters: ${copticCharacters.length}`;
+            console.log('Updated display - chars:', copticCharacters.length);
             
             copticCharacters.forEach(char => {
                 const btn = document.createElement('button');
@@ -596,6 +601,7 @@
                 
                 grid.appendChild(btn);
             });
+            console.log('Finished building keyboard with', copticCharacters.length, 'buttons');
         }
 
         function startVisualization() {
