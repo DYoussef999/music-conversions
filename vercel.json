@@ -1,5 +1,25 @@
 {
   "buildCommand": "",
   "outputDirectory": ".",
-  "public": true
+  "public": true,
+  "headers": [
+    {
+      "source": "/hazzat-visualizer.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000"
+        }
+      ]
+    }
+  ]
 }
