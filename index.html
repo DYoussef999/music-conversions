@@ -280,6 +280,42 @@
             transform: translateX(60px) scale(0.8);
         }
 
+        /* Directional animations */
+        .character-wrapper.slide-to-prev {
+            opacity: 0.4;
+            transform: translateX(-60px) scale(0.8);
+        }
+
+        .character-wrapper.slide-to-current {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        .character-wrapper.slide-to-next {
+            opacity: 0.4;
+            transform: translateX(60px) scale(0.8);
+        }
+
+        /* Hazzat animation wrappers */
+        .hazzat-wrapper {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hazzat-wrapper.slide-to-prev {
+            opacity: 0.4;
+            transform: translateX(-60px) scale(0.8);
+        }
+
+        .hazzat-wrapper.slide-to-current {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        .hazzat-wrapper.slide-to-next {
+            opacity: 0.4;
+            transform: translateX(60px) scale(0.8);
+        }
+
         .character {
             font-family: var(--current-font, 'Hazzat'), serif;
             font-size: 120px;
@@ -1163,6 +1199,7 @@
         let visualizationSteps = [];
         let currentCopticIndex = 0;
         let currentHazzatIndex = 0;
+        let lastNavigationDirection = 'next'; // Track direction for animations
 
         function startVisualization() {
             const input = document.getElementById('hazzatInput').value.trim();
@@ -1274,6 +1311,7 @@
             const charCode = document.getElementById('characterCode');
             const prevCharDisplay = document.getElementById('prevCharacterDisplay');
             const nextCharDisplay = document.getElementById('nextCharacterDisplay');
+            const wrappers = document.querySelectorAll('.character-wrapper');
             
             // Show previous Coptic character
             if (currentCopticIndex > 0) {
@@ -1293,14 +1331,16 @@
                 nextCharDisplay.textContent = '';
             }
             
+            // Update wrapper animations based on direction
+            wrappers.forEach(wrapper => wrapper.classList.remove('slide-to-prev', 'slide-to-current', 'slide-to-next'));
+            
+            if (wrappers[0]) wrappers[0].classList.add(lastNavigationDirection === 'next' ? 'slide-to-prev' : 'slide-to-next');
+            if (wrappers[1]) wrappers[1].classList.add('slide-to-current');
+            if (wrappers[2]) wrappers[2].classList.add(lastNavigationDirection === 'next' ? 'slide-to-next' : 'slide-to-prev');
+            
             // Display bottom section with Hazzat symbols
             const hazzatSection = document.getElementById('hazzatDisplaySection');
             hazzatSection.style.display = 'block';
-            
-            // Trigger animation for hazzat section too
-            hazzatSection.classList.remove('animate-display');
-            void hazzatSection.offsetWidth; // Force reflow to restart animation
-            hazzatSection.classList.add('animate-display');
             
             const hazzatSymbols = currentGroup.hazzatSymbols;
             
@@ -1337,15 +1377,19 @@
                         }
                     }
                     
+                    // Determine animation classes based on direction
+                    const prevClass = lastNavigationDirection === 'next' ? 'slide-to-prev' : 'slide-to-next';
+                    const nextClass = lastNavigationDirection === 'next' ? 'slide-to-next' : 'slide-to-prev';
+                    
                     hazzatSection.innerHTML = `
                         <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                            <div style="opacity: 0.4;">
+                            <div class="hazzat-wrapper ${prevClass}">
                                 ${prevHazzatSvg}
                             </div>
-                            <div>
+                            <div class="hazzat-wrapper slide-to-current">
                                 ${svg}
                             </div>
-                            <div style="opacity: 0.4;">
+                            <div class="hazzat-wrapper ${nextClass}">
                                 ${nextHazzatSvg}
                             </div>
                         </div>
@@ -1378,6 +1422,7 @@
                 currentHazzatIndex = 0;
             }
             
+            lastNavigationDirection = 'next';
             displayCharacter();
             updateNavigationButtons();
         }
@@ -1393,6 +1438,7 @@
                 currentHazzatIndex = Math.max(0, prevGroup.hazzatSymbols.length - 1);
             }
             
+            lastNavigationDirection = 'previous';
             displayCharacter();
             updateNavigationButtons();
         }
