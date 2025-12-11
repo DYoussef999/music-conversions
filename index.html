@@ -253,10 +253,29 @@
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
         }
 
+        .character-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .character-wrapper {
+            text-align: center;
+        }
+
         .character {
             font-family: var(--current-font, 'Hazzat'), serif;
             font-size: 120px;
             color: #333;
+            line-height: 1;
+        }
+
+        .adjacent-character {
+            font-family: var(--current-font, 'Hazzat'), serif;
+            font-size: 60px;
+            color: #333;
+            opacity: 0.4;
             line-height: 1;
         }
 
@@ -537,9 +556,17 @@
                 </div>
 
                 <div class="character-display" onclick="nextCharacter()">
-                    <div>
-                        <div class="character" id="characterDisplay">א</div>
-                        <div class="character-code" id="characterCode"></div>
+                    <div class="character-container">
+                        <div class="character-wrapper">
+                            <div class="adjacent-character" id="prevCharacterDisplay"></div>
+                        </div>
+                        <div class="character-wrapper">
+                            <div class="character" id="characterDisplay">א</div>
+                            <div class="character-code" id="characterCode"></div>
+                        </div>
+                        <div class="character-wrapper">
+                            <div class="adjacent-character" id="nextCharacterDisplay"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -662,6 +689,9 @@
 
         const copticFonts = Object.keys(fontFileMap);
         let fontCache = {}; // Cache loaded fonts and their characters
+        let currentFont = ''; // Initialize currentFont variable
+        let currentText = ''; // Initialize currentText variable
+        let currentCharIndex = 0; // Initialize currentCharIndex variable
 
         // Generate dynamic font-face declarations
         function generateFontFaces() {
@@ -750,14 +780,19 @@
         window.addEventListener('DOMContentLoaded', () => {
             generateFontFaces();
             populateFontDropdown();
+            currentFont = document.getElementById('fontSelect').value || 'Abraham';
             updateFontVariable();
             buildKeyboard();
         });
 
         function updateFontVariable() {
-            document.documentElement.style.setProperty('--current-font', `"${currentFont}"`);
-            const textarea = document.getElementById('hazzatInput');
-            textarea.style.fontFamily = `"${currentFont}", serif`;
+            if (currentFont) {
+                document.documentElement.style.setProperty('--current-font', `"${currentFont}"`);
+                const textarea = document.getElementById('hazzatInput');
+                if (textarea) {
+                    textarea.style.fontFamily = `"${currentFont}", serif`;
+                }
+            }
         }
 
         function changeCopticFont() {
@@ -872,6 +907,28 @@
             const charDisplay = document.getElementById('characterDisplay');
             charDisplay.textContent = char;
             charDisplay.style.fontFamily = `"${currentFont}", serif`;
+            
+            // Display previous character
+            const prevCharDisplay = document.getElementById('prevCharacterDisplay');
+            if (prevCharDisplay) {
+                if (currentCharIndex > 0) {
+                    prevCharDisplay.textContent = currentText[currentCharIndex - 1];
+                    prevCharDisplay.style.fontFamily = `"${currentFont}", serif`;
+                } else {
+                    prevCharDisplay.textContent = '';
+                }
+            }
+            
+            // Display next character
+            const nextCharDisplay = document.getElementById('nextCharacterDisplay');
+            if (nextCharDisplay) {
+                if (currentCharIndex < currentText.length - 1) {
+                    nextCharDisplay.textContent = currentText[currentCharIndex + 1];
+                    nextCharDisplay.style.fontFamily = `"${currentFont}", serif`;
+                } else {
+                    nextCharDisplay.textContent = '';
+                }
+            }
             
             document.getElementById('currentIndex').textContent = currentCharIndex + 1;
             document.getElementById('characterCode').textContent = 
