@@ -542,9 +542,9 @@
                 <label style="display: block; margin-bottom: 15px; font-weight: 600; color: #333;">Hazzat Symbol Maker:</label>
                 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
-                    <button class="key-btn" onclick="addHazzatElement('shortNote')" style="background: #666; color: white;">Short</button>
-                    <button class="key-btn" onclick="addHazzatElement('normalNote')" style="background: #666; color: white;">Normal</button>
-                    <button class="key-btn" onclick="addHazzatElement('longNote')" style="background: #666; color: white;">Long</button>
+                    <button class="key-btn" onclick="addHazzatElement('shortNote')" style="background: #666; color: white;">-</button>
+                    <button class="key-btn" onclick="addHazzatElement('normalNote')" style="background: #666; color: white;">–</button>
+                    <button class="key-btn" onclick="addHazzatElement('longNote')" style="background: #666; color: white;">—</button>
                     <button class="key-btn" onclick="addHazzatElement('upArrow')" style="background: #555; color: white;">⬆</button>
                     <button class="key-btn" onclick="addHazzatElement('downArrow')" style="background: #555; color: white;">⬇</button>
                     <button class="key-btn" onclick="removeLastHazzatElement()" style="background: #555; color: white;">⌫</button>
@@ -808,6 +808,18 @@
             currentFont = document.getElementById('fontSelect').value || 'Abraham';
             updateFontVariable();
             buildKeyboard();
+            
+            // Add event listener to track manual cursor position changes
+            const textarea = document.getElementById('hazzatInput');
+            textarea.addEventListener('click', (e) => {
+                lastCursorPosition = textarea.selectionStart;
+            });
+            textarea.addEventListener('keydown', (e) => {
+                // Update cursor position after key events
+                setTimeout(() => {
+                    lastCursorPosition = textarea.selectionStart;
+                }, 0);
+            });
         });
 
         function updateFontVariable() {
@@ -1109,6 +1121,7 @@
             const newCursorPos = cursorPos + 1;
             textarea.selectionStart = textarea.selectionEnd = newCursorPos;
             lastCursorPosition = newCursorPos;
+            textarea.focus();
             
             currentHazzatSymbol = [];
             updateHazzatPreview();
