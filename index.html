@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Egyptian+Hieroglyphs&display=swap" rel="stylesheet">
+    <script src="https://opentype.js.org/dist/opentype.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -642,30 +643,11 @@
             'Nopher': 'nopher_2.TTF',
             'Pishoi': 'pishoi.TTF',
             'Pope Shenouda': 'Pope Shenouda III Coptic.ttf',
-            'SpacMim': 'SPACHMIM.TTF',
-            'Hazzat': 'hazzat1_10a.ttf'
+            'SpacMim': 'SPACHMIM.TTF'
         };
 
         const copticFonts = Object.keys(fontFileMap);
-
-        const copticCharacters = [
-            '\u2C80', '\u2C81', '\u2C82', '\u2C83', '\u2C84', '\u2C85', '\u2C86', '\u2C87', '\u2C88', '\u2C89',
-            '\u2C8A', '\u2C8B', '\u2C8C', '\u2C8D', '\u2C8E', '\u2C8F', '\u2C90', '\u2C91', '\u2C92', '\u2C93',
-            '\u2C94', '\u2C95', '\u2C96', '\u2C97', '\u2C98', '\u2C99', '\u2C9A', '\u2C9B', '\u2C9C', '\u2C9D',
-            '\u2C9E', '\u2C9F', '\u2CA0', '\u2CA1', '\u2CA2', '\u2CA3', '\u2CA4', '\u2CA5', '\u2CA6', '\u2CA7',
-            '\u2CA8', '\u2CA9', '\u2CAA', '\u2CAB', '\u2CAC', '\u2CAD', '\u2CAE', '\u2CAF', '\u2CB0', '\u2CB1',
-            '\u2CB2', '\u2CB3', '\u2CB4', '\u2CB5', '\u2CB6', '\u2CB7', '\u2CB8', '\u2CB9', '\u2CBA', '\u2CBB',
-            '\u2CBC', '\u2CBD', '\u2CBE', '\u2CBF', '\u2CC0', '\u2CC1', '\u2CC2', '\u2CC3', '\u2CC4', '\u2CC5',
-            '\u2CC6', '\u2CC7', '\u2CC8', '\u2CC9', '\u2CCA', '\u2CCB', '\u2CCC', '\u2CCD', '\u2CCE', '\u2CCF',
-            '\u2CD0', '\u2CD1', '\u2CD2', '\u2CD3', '\u2CD4', '\u2CD5', '\u2CD6', '\u2CD7', '\u2CD8', '\u2CD9',
-            '\u2CDA', '\u2CDB', '\u2CDC', '\u2CDD', '\u2CDE', '\u2CDF', '\u2CE0', '\u2CE1', '\u2CE2', '\u2CE3',
-            '\u2CE4', '\u2CE5', '\u2CE6', '\u2CE7', '\u2CE8', '\u2CE9', '\u2CEA', '\u2CEB', '\u2CEC', '\u2CED',
-            '\u2CEE', '\u2CEF', '\u2CF0', '\u2CF1', '\u2CF2', '\u2CF3'
-        ];
-
-        let currentText = '';
-        let currentCharIndex = 0;
-        let currentFont = 'Hazzat';
+        let fontCache = {}; // Cache loaded fonts and their characters
 
         // Generate dynamic font-face declarations
         function generateFontFaces() {
@@ -673,12 +655,7 @@
             let fontFaceRules = '';
             
             Object.entries(fontFileMap).forEach(([fontName, fileName]) => {
-                let fontPath;
-                if (fontName === 'Hazzat') {
-                    fontPath = `url('${fileName}')`;
-                } else {
-                    fontPath = `url('fonts/${fileName}')`;
-                }
+                const fontPath = `url('fonts/${fileName}')`;
                 fontFaceRules += `@font-face { font-family: '${fontName}'; src: ${fontPath} format('truetype'); }\n`;
             });
             
@@ -695,7 +672,48 @@
                 option.textContent = fontName;
                 select.appendChild(option);
             });
-            select.value = 'Hazzat';
+            select.value = 'Abraham';
+        }
+
+        // Extract characters from font file
+        async function getCharactersFromFont(fontName) {
+            // Return cached characters if available
+            if (fontCache[fontName]) {
+                return fontCache[fontName];
+            }
+
+            try {
+                const fileName = fontFileMap[fontName];
+                const fontPath = `fonts/${fileName}`;
+                
+                const response = await fetch(fontPath);
+                const buffer = await response.arrayBuffer();
+                const font = opentype.parse(buffer);
+                
+                const characters = [];
+                const cmap = font.tables.cmap;
+                
+                if (cmap && cmap.glyphIndexMap) {
+                    Object.keys(cmap.glyphIndexMap).forEach(charCode => {
+                        const code = parseInt(charCode, 10);
+                        // Include printable characters (32-126) and higher Unicode ranges
+                        if (code >= 32 && code <= 126) {
+                            characters.push(String.fromCharCode(code));
+                        } else if (code >= 0x0370 && code <= 0x0400) { // Greek extended
+                            characters.push(String.fromCharCode(code));
+                        } else if (code >= 0x2000 && code <= 0x3000) { // General Punctuation and other blocks
+                            characters.push(String.fromCharCode(code));
+                        }
+                    });
+                }
+                
+                // Cache the characters
+                fontCache[fontName] = characters;
+                return characters;
+            } catch (error) {
+                console.error(`Error loading font ${fontName}:`, error);
+                return [];
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -721,12 +739,38 @@
             }
         }
 
-        function buildKeyboard() {
+        async function buildKeyboard() {
             const grid = document.getElementById('keyboardGrid');
             grid.innerHTML = '';
             grid.style.fontFamily = `"${currentFont}", serif`;
             
-            copticCharacters.forEach(char => {
+            // Show loading message
+            const loadingMsg = document.createElement('div');
+            loadingMsg.textContent = 'Loading characters...';
+            loadingMsg.style.gridColumn = '1 / -1';
+            loadingMsg.style.textAlign = 'center';
+            loadingMsg.style.color = '#999';
+            loadingMsg.style.padding = '20px';
+            grid.appendChild(loadingMsg);
+            
+            // Get characters from the current font
+            const characters = await getCharactersFromFont(currentFont);
+            
+            // Clear the loading message
+            grid.innerHTML = '';
+            
+            if (characters.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.textContent = 'No characters found in this font';
+                emptyMsg.style.gridColumn = '1 / -1';
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.style.color = '#999';
+                emptyMsg.style.padding = '20px';
+                grid.appendChild(emptyMsg);
+                return;
+            }
+            
+            characters.forEach(char => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'key-btn';
