@@ -1349,31 +1349,29 @@
                 nextCharDisplay.textContent = '';
             }
             
-            // Always apply initial layout classes (even if not animating)
-            wrappers.forEach(wrapper => {
-                wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
-            });
-            if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
-            if (wrappers[1]) wrappers[1].classList.add('to-current');
-            if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
-            
             // Only animate if index actually changed
             if (currentCopticIndex !== previousCopticIndex) {
-                // Disable transitions for instant initial state setup
+                // Disable transitions immediately for setup
+                wrappers.forEach(wrapper => wrapper.style.transition = 'none');
+                
+                // Clear all animation classes
                 wrappers.forEach(wrapper => {
-                    wrapper.style.transition = 'none';
+                    wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
                 });
+                
+                // Apply initial state classes
+                if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+                if (wrappers[1]) wrappers[1].classList.add('to-current');
+                if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
                 
                 // Force reflow to apply initial state
                 void wrappers[0].offsetHeight;
                 
-                // Step 2: Enable transitions and animate to end state
-                requestAnimationFrame(() => {
-                    wrappers.forEach(wrapper => {
-                        wrapper.style.transition = '';  // Re-enable transitions
-                    });
+                // Now enable transitions and apply end state
+                setTimeout(() => {
+                    wrappers.forEach(wrapper => wrapper.style.transition = '');
                     
-                    // Remove only the initial state classes, then add end state classes
+                    // Remove initial state classes and apply end state
                     if (lastNavigationDirection === 'next') {
                         // Moving forward: things cycle left
                         if (wrappers[0]) {
@@ -1403,9 +1401,18 @@
                             wrappers[2].classList.add('fade-out-right');
                         }
                     }
-                });
+                }, 0);
                 
                 previousCopticIndex = currentCopticIndex;
+            } else {
+                // No animation - just ensure initial classes are applied
+                wrappers.forEach(wrapper => wrapper.style.transition = '');
+                wrappers.forEach(wrapper => {
+                    wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right');
+                });
+                if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+                if (wrappers[1]) wrappers[1].classList.add('to-current');
+                if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
             }
             
             // Display bottom section with Hazzat symbols
@@ -1467,51 +1474,46 @@
                     if (currentHazzatIndex !== previousHazzatIndex) {
                         const hazzatWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
                         
-                        // Disable transitions for instant initial state setup
-                        hazzatWrappers.forEach(wrapper => {
-                            wrapper.style.transition = 'none';
-                        });
+                        // Disable transitions immediately for setup
+                        hazzatWrappers.forEach(wrapper => wrapper.style.transition = 'none');
                         
                         // Force reflow
                         void hazzatSection.offsetHeight;
                         
-                        // Step 2: Enable transitions and animate
-                        requestAnimationFrame(() => {
-                            const freshWrappers = hazzatSection.querySelectorAll('.hazzat-wrapper');
-                            freshWrappers.forEach(wrapper => {
-                                wrapper.style.transition = '';  // Re-enable transitions
-                            });
+                        // Enable transitions and animate
+                        setTimeout(() => {
+                            hazzatWrappers.forEach(wrapper => wrapper.style.transition = '');
                             
                             if (lastNavigationDirection === 'next') {
                                 // Moving forward: things cycle left
-                                if (freshWrappers[0]) {
-                                    freshWrappers[0].classList.remove('to-left-adj');
-                                    freshWrappers[0].classList.add('fade-out-left');
+                                if (hazzatWrappers[0]) {
+                                    hazzatWrappers[0].classList.remove('to-left-adj');
+                                    hazzatWrappers[0].classList.add('fade-out-left');
                                 }
-                                if (freshWrappers[1]) {
-                                    freshWrappers[1].classList.remove('to-current');
-                                    freshWrappers[1].classList.add('to-left-adj');
+                                if (hazzatWrappers[1]) {
+                                    hazzatWrappers[1].classList.remove('to-current');
+                                    hazzatWrappers[1].classList.add('to-left-adj');
                                 }
-                                if (freshWrappers[2]) {
-                                    freshWrappers[2].classList.remove('to-right-adj');
-                                    freshWrappers[2].classList.add('to-current');
+                                if (hazzatWrappers[2]) {
+                                    hazzatWrappers[2].classList.remove('to-right-adj');
+                                    hazzatWrappers[2].classList.add('to-current');
                                 }
                             } else {
                                 // Moving backward: things cycle right
-                                if (freshWrappers[0]) {
-                                    freshWrappers[0].classList.remove('to-left-adj');
-                                    freshWrappers[0].classList.add('to-current');
+                                if (hazzatWrappers[0]) {
+                                    hazzatWrappers[0].classList.remove('to-left-adj');
+                                    hazzatWrappers[0].classList.add('to-current');
                                 }
-                                if (freshWrappers[1]) {
-                                    freshWrappers[1].classList.remove('to-current');
-                                    freshWrappers[1].classList.add('to-right-adj');
+                                if (hazzatWrappers[1]) {
+                                    hazzatWrappers[1].classList.remove('to-current');
+                                    hazzatWrappers[1].classList.add('to-right-adj');
                                 }
-                                if (freshWrappers[2]) {
-                                    freshWrappers[2].classList.remove('to-right-adj');
-                                    freshWrappers[2].classList.add('fade-out-right');
+                                if (hazzatWrappers[2]) {
+                                    hazzatWrappers[2].classList.remove('to-right-adj');
+                                    hazzatWrappers[2].classList.add('fade-out-right');
                                 }
                             }
-                        });
+                        }, 0);
                         
                         previousHazzatIndex = currentHazzatIndex;
                     }
