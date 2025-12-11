@@ -1364,10 +1364,17 @@
                 requestAnimationFrame(() => {
                     wrappers.forEach(wrapper => wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right'));
                     
-                    // Animate to end positions
-                    if (wrappers[0]) wrappers[0].classList.add('fade-out-left');
-                    if (wrappers[1]) wrappers[1].classList.add('to-left-adj');
-                    if (wrappers[2]) wrappers[2].classList.add('to-current');
+                    if (lastNavigationDirection === 'next') {
+                        // Moving forward: things cycle left
+                        if (wrappers[0]) wrappers[0].classList.add('fade-out-left');
+                        if (wrappers[1]) wrappers[1].classList.add('to-left-adj');
+                        if (wrappers[2]) wrappers[2].classList.add('to-current');
+                    } else {
+                        // Moving backward: things cycle right
+                        if (wrappers[0]) wrappers[0].classList.add('to-current');
+                        if (wrappers[1]) wrappers[1].classList.add('to-right-adj');
+                        if (wrappers[2]) wrappers[2].classList.add('fade-out-right');
+                    }
                     
                     // After animation completes, reset classes to initial state for next animation
                     setTimeout(() => {
@@ -1447,10 +1454,17 @@
                             // Remove all classes first
                             hazzatWrappers.forEach(wrapper => wrapper.classList.remove('to-current', 'to-right-adj', 'to-left-adj', 'fade-out-left', 'fade-out-right'));
                             
-                            // Animate to new positions
-                            if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('fade-out-left');
-                            if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-left-adj');
-                            if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-current');
+                            if (lastNavigationDirection === 'next') {
+                                // Moving forward: things cycle left
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('fade-out-left');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-left-adj');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-current');
+                            } else {
+                                // Moving backward: things cycle right
+                                if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-current');
+                                if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-right-adj');
+                                if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('fade-out-right');
+                            }
                             
                             // After animation completes, reset classes to initial state for next animation
                             setTimeout(() => {
