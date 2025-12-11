@@ -1342,14 +1342,14 @@
                     wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
                     
                     if (lastNavigationDirection === 'next') {
-                        // Position elements at START: right adj positioned to the right, current to left
-                        if (wrappers[0]) wrappers[0].classList.add('to-right-adj');
-                        if (wrappers[1]) wrappers[1].classList.add('to-left-adj');
+                        // START positions for NEXT: wrapper[0] is old-current (center), wrapper[1] is old-right (right), wrapper[2] stays right
+                        if (wrappers[0]) wrappers[0].classList.add('to-current');
+                        if (wrappers[1]) wrappers[1].classList.add('to-right-adj');
                         if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
                     } else {
-                        // Position elements at START: left adj positioned to the left, current to right
+                        // START positions for PREVIOUS: wrapper[0] stays left, wrapper[1] is old-current (center), wrapper[2] is old-left (left)
                         if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
-                        if (wrappers[1]) wrappers[1].classList.add('to-right-adj');
+                        if (wrappers[1]) wrappers[1].classList.add('to-current');
                         if (wrappers[2]) wrappers[2].classList.add('to-left-adj');
                     }
                     
@@ -1372,15 +1372,15 @@
                         wrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
                         
                         if (lastNavigationDirection === 'next') {
-                            // Animate to END: left fades out, current becomes left-adj, right becomes current
+                            // END positions for NEXT: left fades, center-was-right becomes current, right stays
                             if (wrappers[0]) wrappers[0].classList.add('fade-out-left');
-                            if (wrappers[1]) wrappers[1].classList.add('to-left-adj');
-                            if (wrappers[2]) wrappers[2].classList.add('to-current');
+                            if (wrappers[1]) wrappers[1].classList.add('to-current');
+                            if (wrappers[2]) wrappers[2].classList.add('to-right-adj');
                         } else {
-                            // Animate to END: left becomes current, current becomes right-adj, right fades out
-                            if (wrappers[0]) wrappers[0].classList.add('to-current');
-                            if (wrappers[1]) wrappers[1].classList.add('to-right-adj');
-                            if (wrappers[2]) wrappers[2].classList.add('fade-out-right');
+                            // END positions for PREVIOUS: left stays, center becomes right-adj, right fades
+                            if (wrappers[0]) wrappers[0].classList.add('to-left-adj');
+                            if (wrappers[1]) wrappers[1].classList.add('fade-out-right');
+                            if (wrappers[2]) wrappers[2].classList.add('to-current');
                         }
                         
                         // After animation completes, reset to center state
@@ -1457,10 +1457,10 @@
                             // Position elements at START
                             hazzatSection.innerHTML = `
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px;">
-                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-right-adj' : 'to-left-adj'}">
+                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-current' : 'to-left-adj'}">
                                         ${prevHazzatSvg}
                                     </div>
-                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-left-adj' : 'to-right-adj'}">
+                                    <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-right-adj' : 'to-current'}">
                                         ${svg}
                                     </div>
                                     <div class="hazzat-wrapper ${lastNavigationDirection === 'next' ? 'to-right-adj' : 'to-left-adj'}">
@@ -1479,13 +1479,15 @@
                                 hazzatWrappers.forEach(wrapper => wrapper.classList.remove('fade-out-left', 'to-left-adj', 'to-current', 'fade-out-right', 'to-right-adj'));
                                 
                                 if (lastNavigationDirection === 'next') {
+                                    // END positions for NEXT: left fades, center becomes current, right stays
                                     if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('fade-out-left');
-                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-left-adj');
-                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-current');
+                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-current');
+                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-right-adj');
                                 } else {
-                                    if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-current');
-                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('to-right-adj');
-                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('fade-out-right');
+                                    // END positions for PREVIOUS: left stays, center fades, right becomes current
+                                    if (hazzatWrappers[0]) hazzatWrappers[0].classList.add('to-left-adj');
+                                    if (hazzatWrappers[1]) hazzatWrappers[1].classList.add('fade-out-right');
+                                    if (hazzatWrappers[2]) hazzatWrappers[2].classList.add('to-current');
                                 }
                                 
                                 // After animation completes, reset to center state
