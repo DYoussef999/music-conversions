@@ -425,33 +425,53 @@
             
             // Arrows on the right at 30-degree angle (parallel to skew, positive slope)
             if (hasArrows && notes.length > 0) {
-                const arrowStartY = startY;
-                const arrowEndY = startY + (notes.length - 1) * noteSpacing;
-                const arrowStartX = baseRightX + ((notes.length - 1) * noteSpacing * skewTan) + 8;
-                const arrowEndX = arrowStartX - (arrowEndY - arrowStartY) * skewTan;
+                const arrowTopY = startY;
+                const arrowBottomY = startY + (notes.length - 1) * noteSpacing;
+                const arrowBottomX = baseRightX + ((notes.length - 1) * noteSpacing * skewTan) + 8;
+                const arrowTopX = arrowBottomX - (arrowBottomY - arrowTopY) * skewTan;
                 
                 arrows.forEach((arrow, idx) => {
                     const xOffset = idx * 8;
-                    const arrowheadSize = 6;
+                    const arrowheadSize = 7;
                     
                     if (arrow === 'upArrow') {
-                        // Arrow pointing up and to the right (parallel to positive slope)
-                        svg += `<line x1="${arrowStartX + xOffset}" y1="${arrowEndY}" x2="${arrowEndX + xOffset}" y2="${arrowStartY}" stroke="#2563eb" stroke-width="2"/>`;
-                        // Arrowhead at top
-                        const tipX = arrowEndX + xOffset;
-                        const tipY = arrowStartY;
-                        const angle = -skewAngle - Math.PI / 2; // pointing upward and right
-                        const arrowSize = arrowheadSize;
-                        svg += `<polygon points="${tipX},${tipY} ${tipX + arrowSize * Math.cos(angle + Math.PI / 6)},${tipY + arrowSize * Math.sin(angle + Math.PI / 6)} ${tipX + arrowSize * Math.cos(angle - Math.PI / 6)},${tipY + arrowSize * Math.sin(angle - Math.PI / 6)}" fill="#2563eb"/>`;
+                        // Arrow pointing up-right (from bottom-left to top-right)
+                        const x1 = arrowBottomX + xOffset;
+                        const y1 = arrowBottomY;
+                        const x2 = arrowTopX + xOffset;
+                        const y2 = arrowTopY;
+                        
+                        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#2563eb" stroke-width="2"/>`;
+                        
+                        // Arrowhead at top-right
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const len = Math.sqrt(dx * dx + dy * dy);
+                        const ux = dx / len;
+                        const uy = dy / len;
+                        const px = -uy;
+                        const py = ux;
+                        
+                        svg += `<polygon points="${x2},${y2} ${x2 - ux * arrowheadSize - px * arrowheadSize},${y2 - uy * arrowheadSize - py * arrowheadSize} ${x2 - ux * arrowheadSize + px * arrowheadSize},${y2 - uy * arrowheadSize + py * arrowheadSize}" fill="#2563eb"/>`;
                     } else if (arrow === 'downArrow') {
-                        // Arrow pointing down and to the left (parallel to positive slope)
-                        svg += `<line x1="${arrowStartX + xOffset}" y1="${arrowStartY}" x2="${arrowEndX + xOffset}" y2="${arrowEndY}" stroke="#dc2626" stroke-width="2"/>`;
-                        // Arrowhead at bottom
-                        const tipX = arrowEndX + xOffset;
-                        const tipY = arrowEndY;
-                        const angle = -skewAngle + Math.PI / 2; // pointing downward and left
-                        const arrowSize = arrowheadSize;
-                        svg += `<polygon points="${tipX},${tipY} ${tipX + arrowSize * Math.cos(angle + Math.PI / 6)},${tipY + arrowSize * Math.sin(angle + Math.PI / 6)} ${tipX + arrowSize * Math.cos(angle - Math.PI / 6)},${tipY + arrowSize * Math.sin(angle - Math.PI / 6)}" fill="#dc2626"/>`;
+                        // Arrow pointing down-left (from top-right to bottom-left) - opposite of up arrow
+                        const x1 = arrowTopX + xOffset;
+                        const y1 = arrowTopY;
+                        const x2 = arrowBottomX + xOffset;
+                        const y2 = arrowBottomY;
+                        
+                        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#dc2626" stroke-width="2"/>`;
+                        
+                        // Arrowhead at bottom-left
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+                        const len = Math.sqrt(dx * dx + dy * dy);
+                        const ux = dx / len;
+                        const uy = dy / len;
+                        const px = -uy;
+                        const py = ux;
+                        
+                        svg += `<polygon points="${x2},${y2} ${x2 - ux * arrowheadSize - px * arrowheadSize},${y2 - uy * arrowheadSize - py * arrowheadSize} ${x2 - ux * arrowheadSize + px * arrowheadSize},${y2 - uy * arrowheadSize + py * arrowheadSize}" fill="#dc2626"/>`;
                     }
                 });
             } else if (hasArrows && notes.length === 0) {
