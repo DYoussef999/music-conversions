@@ -98,9 +98,9 @@
             background: #f9f9f9;
             border: 2px solid #ddd;
             border-radius: 8px;
-            padding: 20px;
+            padding: 30px 20px;
             margin-bottom: 20px;
-            min-height: 100px;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,36 +116,10 @@
             text-align: center;
         }
 
-        .symbol-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            font-size: 13px;
+        .symbol-preview svg {
+            max-width: 100px;
+            height: auto;
         }
-
-        .symbol-badge {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .badge-short { background: #4a5568; }
-        .badge-normal { background: #4a5568; }
-        .badge-long { background: #2d3748; }
-        .badge-up { background: #2563eb; }
-        .badge-down { background: #dc2626; }
-        .badge-vibrato { background: #9333ea; }
 
         .action-buttons {
             display: flex;
@@ -394,84 +368,100 @@
                 return;
             }
 
-            let html = '<div style="width: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">';
-            currentSymbol.forEach((element, index) => {
-                const labels = {
-                    shortNote: 'Short',
-                    normalNote: 'Normal',
-                    longNote: 'Long',
-                    upArrow: '⬆️ Up',
-                    downArrow: '⬇️ Down',
-                    vibrato: '〰️ Vibrato'
-                };
-                const badgeClass = `badge-${element}`;
-                html += `<div class="symbol-item">
-                    <span class="symbol-badge ${badgeClass}">${index + 1}</span>
-                    <span>${labels[element]}</span>
-                </div>`;
-            });
-            html += '</div>';
-            preview.innerHTML = html;
+            preview.innerHTML = '<div class="symbol-preview">' + renderHazzatSymbol(currentSymbol) + '</div>';
         }
 
         function renderHazzatSymbol(elements) {
-            const scale = 1;
-            const baseWidth = 80 * scale;
-            const baseHeight = 100 * scale;
-            
             const notes = elements.filter(e => ['shortNote', 'normalNote', 'longNote'].includes(e));
             const arrows = elements.filter(e => ['upArrow', 'downArrow'].includes(e));
             const hasVibrato = elements.includes('vibrato');
             
-            const lineGap = 8 * scale;
+            // Dimensions
+            const noteHeight = 12;
+            const noteSpacing = 14;
+            const arrowWidth = 30;
+            const padding = 10;
+            
+            // Calculate dimensions
+            const totalNoteHeight = notes.length > 0 ? (notes.length * noteSpacing) : noteHeight;
             const hasArrows = arrows.length > 0;
-            const width = hasArrows ? baseWidth * 1.4 : baseWidth;
-            const height = baseHeight + (Math.max(0, notes.length - 1) * lineGap);
+            const contentWidth = 80;
+            const width = hasArrows ? contentWidth + arrowWidth + padding : contentWidth + padding;
+            const height = totalNoteHeight + (hasVibrato ? 25 : 10) + padding * 2;
             
-            const rightEdge = baseWidth * 0.7;
-            const startY = hasVibrato ? 25 * scale : 20 * scale;
-            const stackHeight = notes.length > 0 ? (notes.length - 1) * lineGap : 0;
-
-            let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 80px; height: auto;">`;
+            let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="display: block;">`;
             
-            // Vibrato
+            // Background
+            svg += `<rect width="${width}" height="${height}" fill="white" stroke="none"/>`;
+            
+            const startY = hasVibrato ? 25 : 10;
+            const notesBaseX = 10;
+            const arrowsBaseX = contentWidth + padding;
+            
+            // Vibrato at top (always)
             if (hasVibrato) {
-                svg += `<text x="${rightEdge}" y="${15 * scale}" font-size="${20 * scale}" text-anchor="end" fill="#7c3aed" font-weight="bold">~</text>`;
+                svg += `<text x="${width/2}" y="18" font-size="20" fill="#7c3aed" font-weight="bold" text-anchor="middle">~</text>`;
             }
             
-            // Notes
+            // Notes stacked vertically
             notes.forEach((note, index) => {
-                const y = startY + (index * lineGap);
-                let length = 0;
-                let strokeWidth = 3 * scale;
+                const y = startY + (index * noteSpacing) + noteHeight / 2;
+                let dashLength = 0;
                 
                 if (note === 'shortNote') {
-                    length = 10 * scale;
+                    dashLength = 15;
                 } else if (note === 'normalNote') {
-                    length = 20 * scale;
+                    dashLength = 25;
                 } else if (note === 'longNote') {
-                    length = 35 * scale;
-                    strokeWidth = 3.5 * scale;
+                    dashLength = 40;
                 }
                 
-                svg += `<line x1="${rightEdge - length}" y1="${y}" x2="${rightEdge}" y2="${y}" stroke="#000" stroke-width="${strokeWidth}" stroke-linecap="round"/>`;
+                const x1 = notesBaseX;
+                const x2 = notesBaseX + dashLength;
+                svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#000" stroke-width="3" stroke-linecap="round"/>`;
             });
             
-            // Arrows
-            arrows.forEach((arrow, index) => {
-                const arrowX = baseWidth * 0.85;
+            // Arrows on the right spanning the full height
+            if (hasArrows && notes.length > 0) {
                 const arrowStartY = startY;
-                const arrowEndY = startY + stackHeight;
-                const arrowheadSize = 5 * scale;
+                const arrowEndY = startY + (notes.length - 1) * noteSpacing;
+                const arrowCenterX = arrowsBaseX + arrowWidth / 2;
+                const arrowheadSize = 6;
                 
-                if (arrow === 'upArrow') {
-                    svg += `<line x1="${arrowX}" y1="${arrowEndY}" x2="${arrowX}" y2="${arrowStartY}" stroke="#2563eb" stroke-width="2"/>
-                            <polygon points="${arrowX},${arrowStartY - arrowheadSize * 1.5} ${arrowX - arrowheadSize},${arrowStartY} ${arrowX + arrowheadSize},${arrowStartY}" fill="#2563eb"/>`;
-                } else if (arrow === 'downArrow') {
-                    svg += `<line x1="${arrowX}" y1="${arrowStartY}" x2="${arrowX}" y2="${arrowEndY}" stroke="#dc2626" stroke-width="2"/>
-                            <polygon points="${arrowX},${arrowEndY + arrowheadSize * 1.5} ${arrowX - arrowheadSize},${arrowEndY} ${arrowX + arrowheadSize},${arrowEndY}" fill="#dc2626"/>`;
-                }
-            });
+                arrows.forEach((arrow, idx) => {
+                    const xOffset = idx * 12;
+                    
+                    if (arrow === 'upArrow') {
+                        // Arrow pointing up
+                        svg += `<line x1="${arrowCenterX + xOffset}" y1="${arrowEndY}" x2="${arrowCenterX + xOffset}" y2="${arrowStartY}" stroke="#2563eb" stroke-width="2"/>`;
+                        // Arrowhead
+                        svg += `<polygon points="${arrowCenterX + xOffset},${arrowStartY - arrowheadSize} ${arrowCenterX - arrowheadSize + xOffset},${arrowStartY} ${arrowCenterX + arrowheadSize + xOffset},${arrowStartY}" fill="#2563eb"/>`;
+                    } else if (arrow === 'downArrow') {
+                        // Arrow pointing down
+                        svg += `<line x1="${arrowCenterX + xOffset}" y1="${arrowStartY}" x2="${arrowCenterX + xOffset}" y2="${arrowEndY}" stroke="#dc2626" stroke-width="2"/>`;
+                        // Arrowhead
+                        svg += `<polygon points="${arrowCenterX + xOffset},${arrowEndY + arrowheadSize} ${arrowCenterX - arrowheadSize + xOffset},${arrowEndY} ${arrowCenterX + arrowheadSize + xOffset},${arrowEndY}" fill="#dc2626"/>`;
+                    }
+                });
+            } else if (hasArrows && notes.length === 0) {
+                // If only arrows, position them in the middle
+                const centerY = height / 2;
+                const arrowCenterX = width / 2;
+                const arrowheadSize = 6;
+                
+                arrows.forEach((arrow, idx) => {
+                    const xOffset = idx * 15;
+                    const arrowHeight = 40;
+                    
+                    if (arrow === 'upArrow') {
+                        svg += `<line x1="${arrowCenterX + xOffset}" y1="${centerY + arrowHeight/2}" x2="${arrowCenterX + xOffset}" y2="${centerY - arrowHeight/2}" stroke="#2563eb" stroke-width="2"/>`;
+                        svg += `<polygon points="${arrowCenterX + xOffset},${centerY - arrowHeight/2 - arrowheadSize} ${arrowCenterX - arrowheadSize + xOffset},${centerY - arrowHeight/2} ${arrowCenterX + arrowheadSize + xOffset},${centerY - arrowHeight/2}" fill="#2563eb"/>`;
+                    } else if (arrow === 'downArrow') {
+                        svg += `<line x1="${arrowCenterX + xOffset}" y1="${centerY - arrowHeight/2}" x2="${arrowCenterX + xOffset}" y2="${centerY + arrowHeight/2}" stroke="#dc2626" stroke-width="2"/>`;
+                        svg += `<polygon points="${arrowCenterX + xOffset},${centerY + arrowHeight/2 + arrowheadSize} ${arrowCenterX - arrowheadSize + xOffset},${centerY + arrowHeight/2} ${arrowCenterX + arrowheadSize + xOffset},${centerY + arrowHeight/2}" fill="#dc2626"/>`;
+                    }
+                });
+            }
             
             svg += '</svg>';
             return svg;
