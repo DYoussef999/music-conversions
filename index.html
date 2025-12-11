@@ -1243,8 +1243,27 @@
             let currentGroup = null;
             let hazzatIndex = 0; // Counter for which hazzat we're on
             
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
+            let i = 0;
+            while (i < text.length) {
+                let char;
+                
+                // Check if this is a bracketed character [x]
+                if (text[i] === '[') {
+                    // Find the closing bracket
+                    const closingIndex = text.indexOf(']', i);
+                    if (closingIndex !== -1) {
+                        // Extract the content between brackets
+                        char = text.substring(i + 1, closingIndex);
+                        i = closingIndex + 1; // Skip past the closing bracket
+                    } else {
+                        // No closing bracket, treat [ as normal character
+                        char = text[i];
+                        i++;
+                    }
+                } else {
+                    char = text[i];
+                    i++;
+                }
                 
                 // Check if this is a hazzat marker
                 if (char === '◆') {
